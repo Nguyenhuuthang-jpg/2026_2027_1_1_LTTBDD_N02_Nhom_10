@@ -1,0 +1,1 @@
+// người dùng hiện tại + vai trò
