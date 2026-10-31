@@ -35,9 +35,32 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  # Quản lý trạng thái
+  provider: ^6.1.2
+
+  # Backend: Supabase (Auth + Postgres + Storage)
+  supabase_flutter: ^2.8.0
+
+  # Cache cục bộ (SQLite qua drift) + lưu cài đặt nhẹ (ngôn ngữ, giao diện)
+  drift: ^2.22.0
+  sqlite3_flutter_libs: ^0.5.28
+  path_provider: ^2.1.5
+  path: ^1.9.0
+  shared_preferences: ^2.3.4
+
+  # Phát nhạc
+  just_audio: ^0.9.42
+
+  # Định dạng ngày giờ, số
+  intl: ^0.20.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  # Sinh code cho drift
+  drift_dev: ^2.22.0
+  build_runner: ^2.4.13
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
