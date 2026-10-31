@@ -1,0 +1,1 @@
+-- Tạo 7 bảng, khóa ngoại
