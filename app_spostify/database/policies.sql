@@ -1,11 +1,3 @@
--- =====================================================================
--- Giai Điệu · phân quyền (Row Level Security)
--- Chạy sau schema.sql.
---   Người dùng: đọc nội dung hiển thị, quản lý dữ liệu của chính mình.
---   Quản trị viên: toàn quyền với bài hát, playlist, người dùng.
--- =====================================================================
-
--- Hàm kiểm tra admin (security definer để tránh đệ quy RLS trên profiles)
 create or replace function public.is_admin()
 returns boolean
 language sql
