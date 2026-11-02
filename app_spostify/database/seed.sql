@@ -1,13 +1,5 @@
--- =====================================================================
--- Giai Điệu · dữ liệu mẫu
--- Chạy sau schema.sql và policies.sql (trong SQL Editor, chạy với quyền postgres
--- nên không bị RLS chặn).
---
--- audio_url / cover_url để trống: khi có file nhạc thật, upload lên Supabase
--- Storage rồi cập nhật hai cột này (hoặc thêm qua màn Quản lý bài hát).
--- =====================================================================
 
--- Thể loại
+-- Thể loại ( có thể thêm )
 insert into public.genres (name) values
   ('Pop'), ('Indie'), ('Acoustic'), ('Hip-hop'), ('Chill')
 on conflict (name) do nothing;

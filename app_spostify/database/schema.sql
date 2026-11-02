@@ -1,19 +1,3 @@
--- =====================================================================
--- Giai Điệu · schema (Supabase / PostgreSQL)
--- Chạy file này đầu tiên trong Supabase → SQL Editor, rồi đến policies.sql
--- và cuối cùng là seed.sql.
---
--- 7 bảng, bám theo sơ đồ use case:
---   profiles          Đăng ký / Đăng nhập / Xem hồ sơ / Quản lý người dùng
---   genres            Thể loại (Pop, Indie, Acoustic, ...)
---   songs             Nghe nhạc / Tìm kiếm / Quản lý bài hát
---   playlists         Trang chủ ("Dành riêng cho bạn")
---   playlist_songs    Bài hát nằm trong playlist (nhiều-nhiều)
---   favorites         Xem thư viện (bài hát yêu thích)
---   listening_history Lịch sử nghe + số liệu cho Xem tổng quan
--- Mật khẩu / quên mật khẩu do Supabase Auth (auth.users) xử lý.
--- =====================================================================
-
 create extension if not exists "pgcrypto";
 
 -- ---------- 1. profiles ----------------------------------------------
