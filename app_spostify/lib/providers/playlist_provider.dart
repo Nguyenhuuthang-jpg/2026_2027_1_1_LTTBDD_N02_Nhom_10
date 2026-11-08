@@ -1,10 +1,18 @@
 import 'package:flutter/foundation.dart';
 
-import '../data/remote/supabase_client.dart';
+import '../data/local/app_database.dart';
+import '../data/repositories/playlist_repository.dart';
 import '../models/playlist.dart';
+import '../models/song.dart';
 
 /// Quản lý danh sách playlist. Phân quyền ghi được kiểm soát bằng RLS ở database.
 class PlaylistProvider extends ChangeNotifier {
+  PlaylistProvider({PlaylistRepository? repository, AppDatabase? cache})
+      : _repository = repository ?? PlaylistRepository(),
+        _db = cache;
+
+  final PlaylistRepository _repository;
+  final AppDatabase? _db;
   List<Playlist> _playlists = [];
   bool _isLoading = false;
   String? _errorMessage;
@@ -18,16 +26,13 @@ class PlaylistProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
     try {
-      var query = AppSupabase.client
-          .from('playlists')
-          .select('*, playlist_songs(count)');
-      if (!includeHidden) query = query.eq('is_visible', true);
-      final rows = await query.order('created_at', ascending: false);
-      _playlists = rows
-          .map((row) => Playlist.fromJson(Map<String, dynamic>.from(row)))
-          .toList();
+      _playlists = await _repository.fetchPlaylists(includeHidden: includeHidden);
+      if (!includeHidden) await _db?.cachePlaylists(_playlists);
     } catch (error) {
       _errorMessage = error.toString();
+      if (_playlists.isEmpty && !includeHidden) {
+        _playlists = _db?.cachedPlaylists() ?? const [];
+      }
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -39,49 +44,51 @@ class PlaylistProvider extends ChangeNotifier {
     String? description,
     String? coverUrl,
     bool isVisible = true,
-  }) async {
-    if (name.trim().isEmpty || name.trim().length > 60) {
-      _errorMessage = 'Tên playlist phải có từ 1 đến 60 ký tự.';
-      notifyListeners();
-      return false;
-    }
-    try {
-      final row = await AppSupabase.client
-          .from('playlists')
-          .insert({
-            'name': name.trim(),
-            'description': description?.trim(),
-            'cover_url': coverUrl,
-            'is_visible': isVisible,
-          })
-          .select('*, playlist_songs(count)')
-          .single();
-      _playlists.insert(0, Playlist.fromJson(Map<String, dynamic>.from(row)));
-      _errorMessage = null;
-      notifyListeners();
-      return true;
-    } catch (error) {
-      _errorMessage = error.toString();
-      notifyListeners();
-      return false;
-    }
+  }) =>
+      _run(() async {
+        final created = await _repository.createPlaylist(
+          name: name,
+          description: description,
+          coverUrl: coverUrl,
+          isVisible: isVisible,
+        );
+        _playlists = [created, ..._playlists];
+      });
+
+  Future<bool> updatePlaylist(Playlist playlist) => _run(() async {
+        final updated = await _repository.updatePlaylist(playlist);
+        _replace(updated);
+      });
+
+  Future<bool> setVisibility(int id, bool visible) => _run(() async {
+        final updated = await _repository.setVisibility(id, isVisible: visible);
+        _replace(updated);
+      });
+
+  Future<bool> deletePlaylist(int id) => _run(() async {
+        await _repository.deletePlaylist(id);
+        _playlists = _playlists.where((p) => p.id != id).toList();
+      });
+
+  Future<List<Song>> songsOf(int playlistId) => _repository.fetchSongsOf(playlistId);
+
+  Future<bool> setSongsOf(Playlist playlist, List<int> songIds) => _run(() async {
+        await _repository.setSongsOf(playlist.id, songIds);
+        _replace(playlist.copyWith(songCount: songIds.length));
+      });
+
+  void _replace(Playlist updated) {
+    _playlists = _playlists.map((p) => p.id == updated.id ? updated : p).toList();
   }
 
-  Future<bool> setVisibility(int id, bool visible) async {
+  Future<bool> _run(Future<void> Function() action) async {
     try {
-      final row = await AppSupabase.client
-          .from('playlists')
-          .update({'is_visible': visible})
-          .eq('id', id)
-          .select('*, playlist_songs(count)')
-          .single();
-      final updated = Playlist.fromJson(Map<String, dynamic>.from(row));
-      _playlists = _playlists.map((item) => item.id == id ? updated : item).toList();
+      await action();
       _errorMessage = null;
       notifyListeners();
       return true;
     } catch (error) {
-      _errorMessage = error.toString();
+      _errorMessage = error is ArgumentError ? '${error.message}' : error.toString();
       notifyListeners();
       return false;
     }

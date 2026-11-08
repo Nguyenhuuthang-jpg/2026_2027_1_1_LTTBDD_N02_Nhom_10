@@ -11,8 +11,11 @@ class PlayerProvider extends ChangeNotifier {
       : _audioService = audioService ?? AudioService() {
     _subscriptions.add(_audioService.playerStateStream.listen((state) {
       _isPlaying = state.playing;
+      final justCompleted = state.processingState == ProcessingState.completed &&
+          _processingState != ProcessingState.completed;
       _processingState = state.processingState;
       notifyListeners();
+      if (justCompleted) playNext();
     }));
     _subscriptions.add(_audioService.positionStream.listen((value) {
       _position = value;
@@ -44,6 +47,16 @@ class PlayerProvider extends ChangeNotifier {
   Duration get position => _position;
   Duration get duration => _duration;
   ProcessingState get processingState => _processingState;
+  bool get hasNext => _currentIndex >= 0 && _currentIndex + 1 < _queue.length;
+  bool get hasPrevious => _currentIndex > 0;
+
+  /// Được gọi mỗi khi một bài bắt đầu phát (dùng để ghi lịch sử nghe).
+  void Function(Song song)? onSongStarted;
+
+  void clearError() {
+    _errorMessage = null;
+    notifyListeners();
+  }
 
   Future<void> playSong(Song song, {List<Song>? queue}) async {
     if (song.audioUrl == null || song.audioUrl!.trim().isEmpty) {
@@ -65,7 +78,12 @@ class PlayerProvider extends ChangeNotifier {
     notifyListeners();
     try {
       await _audioService.load(song.audioUrl!);
-      await _audioService.play();
+      onSongStarted?.call(song);
+      // play() chỉ hoàn thành khi dừng phát, nên không await để tránh treo trạng thái loading.
+      unawaited(_audioService.play().catchError((Object error) {
+        _errorMessage = 'Không thể phát bài hát: $error';
+        notifyListeners();
+      }));
     } catch (error) {
       _errorMessage = 'Không thể phát bài hát: $error';
     } finally {
@@ -74,12 +92,26 @@ class PlayerProvider extends ChangeNotifier {
     }
   }
 
+  /// Dừng hẳn và xóa hàng đợi (ví dụ khi đăng xuất).
+  Future<void> stop() async {
+    await _audioService.stop();
+    _queue = [];
+    _currentIndex = -1;
+    _currentSong = null;
+    _position = Duration.zero;
+    _duration = Duration.zero;
+    notifyListeners();
+  }
+
   Future<void> togglePlayPause() async {
     try {
       if (_isPlaying) {
         await _audioService.pause();
       } else if (_currentSong != null) {
-        await _audioService.play();
+        if (_processingState == ProcessingState.completed) {
+          await _audioService.seek(Duration.zero);
+        }
+        unawaited(_audioService.play());
       }
     } catch (error) {
       _errorMessage = error.toString();
