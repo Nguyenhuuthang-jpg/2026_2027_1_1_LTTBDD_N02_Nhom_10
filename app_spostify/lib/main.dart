@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'app.dart';
+import 'data/local/prefs_store.dart';
 import 'data/remote/supabase_client.dart';
 
 Future<void> main() async {
@@ -13,7 +14,6 @@ Future<void> main() async {
 
   try {
     await AppSupabase.initialize();
-    runApp(const GiaiDieuApp());
   } catch (error, stackTrace) {
     FlutterError.reportError(FlutterErrorDetails(
       exception: error,
@@ -21,6 +21,17 @@ Future<void> main() async {
       library: 'Giai Điệu startup',
       context: ErrorDescription('while initializing Supabase'),
     ));
-    runApp(const SupabaseSetupRequiredApp());
+    runApp(SupabaseSetupRequiredApp(error: error));
+    return;
   }
+
+  // Cài đặt (ngôn ngữ, sáng/tối) + cache. Lỗi ở đây không được chặn app chạy.
+  PrefsStore? prefs;
+  try {
+    prefs = await PrefsStore.create();
+  } catch (error) {
+    debugPrint('Không mở được shared_preferences: $error');
+  }
+
+  runApp(GiaiDieuApp(prefs: prefs));
 }

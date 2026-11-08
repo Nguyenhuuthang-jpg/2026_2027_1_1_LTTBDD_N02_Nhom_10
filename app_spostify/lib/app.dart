@@ -2,37 +2,61 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
+import 'data/local/app_database.dart';
+import 'data/local/prefs_store.dart';
+import 'features/admin/admin_shell.dart';
 import 'features/auth/login_screen.dart';
-import 'models/app_user.dart';
+import 'features/user/user_shell.dart';
 import 'providers/auth_provider.dart';
+import 'providers/history_provider.dart';
 import 'providers/player_provider.dart';
 import 'providers/playlist_provider.dart';
+import 'providers/settings_provider.dart';
 import 'providers/song_provider.dart';
+import 'providers/stats_provider.dart';
+import 'providers/user_provider.dart';
 
 class GiaiDieuApp extends StatelessWidget {
-  const GiaiDieuApp({super.key});
+  const GiaiDieuApp({super.key, this.prefs});
+
+  /// Có thể null (ví dụ trong test) – khi đó cài đặt không được lưu lại.
+  final PrefsStore? prefs;
 
   @override
   Widget build(BuildContext context) {
+    final cache = prefs == null ? null : AppDatabase(prefs!);
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => SettingsProvider(store: prefs)),
         ChangeNotifierProvider(create: (_) => AuthProvider()..initialize()),
-        ChangeNotifierProvider(create: (_) => SongProvider()),
-        ChangeNotifierProvider(create: (_) => PlaylistProvider()),
-        ChangeNotifierProvider(create: (_) => PlayerProvider()),
+        ChangeNotifierProvider(create: (_) => SongProvider(cache: cache)),
+        ChangeNotifierProvider(create: (_) => PlaylistProvider(cache: cache)),
+        ChangeNotifierProvider(create: (_) => HistoryProvider()),
+        ChangeNotifierProvider(create: (_) => StatsProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(
+          create: (context) {
+            final history = context.read<HistoryProvider>();
+            // Mỗi lần bắt đầu phát một bài -> ghi lịch sử + tăng lượt nghe.
+            return PlayerProvider()..onSongStarted = history.recordPlay;
+          },
+        ),
       ],
-      child: MaterialApp(
-        title: 'Giai Điệu',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        themeMode: ThemeMode.dark,
-        home: const _AuthGate(),
+      child: Consumer<SettingsProvider>(
+        builder: (context, settings, _) => MaterialApp(
+          title: 'Giai Điệu',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: settings.themeMode,
+          home: const _AuthGate(),
+        ),
       ),
     );
   }
 }
 
+/// Chưa đăng nhập -> LoginScreen; admin -> AdminShell; người dùng -> UserShell.
 class _AuthGate extends StatelessWidget {
   const _AuthGate();
 
@@ -45,75 +69,55 @@ class _AuthGate extends StatelessWidget {
         }
         final user = auth.user;
         if (user == null) return const LoginScreen();
-        return _RoleLandingScreen(user: user);
+        // Key theo id để khi đổi tài khoản, toàn bộ trạng thái shell được tạo lại.
+        return user.isAdmin
+            ? AdminShell(key: ValueKey('admin-${user.id}'))
+            : UserShell(key: ValueKey('user-${user.id}'));
       },
-    );
-  }
-}
-
-/// Điểm rẽ nhánh đầu tiên. Các màn dashboard đầy đủ thuộc phần việc UI riêng.
-class _RoleLandingScreen extends StatelessWidget {
-  const _RoleLandingScreen({required this.user});
-
-  final AppUser user;
-
-  @override
-  Widget build(BuildContext context) {
-    final isAdmin = user.role == UserRole.admin;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(isAdmin ? 'Khu vực quản trị' : 'Giai Điệu'),
-        actions: [
-          IconButton(
-            tooltip: 'Đăng xuất',
-            onPressed: () => context.read<AuthProvider>().signOut(),
-            icon: const Icon(Icons.logout),
-          ),
-        ],
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(isAdmin ? Icons.admin_panel_settings : Icons.music_note,
-                  size: 64, color: Theme.of(context).colorScheme.primary),
-              const SizedBox(height: 16),
-              Text(isAdmin ? 'Xin chào Quản trị viên' : 'Xin chào ${user.name}',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                  textAlign: TextAlign.center),
-              const SizedBox(height: 8),
-              Text(isAdmin
-                  ? 'Đăng nhập thành công với quyền admin.'
-                  : 'Đăng nhập thành công với quyền người dùng.'),
-              const SizedBox(height: 8),
-              Text(user.email),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
 
 /// Màn hình hướng dẫn khi chưa cấu hình khóa kết nối Supabase.
 class SupabaseSetupRequiredApp extends StatelessWidget {
-  const SupabaseSetupRequiredApp({super.key});
+  const SupabaseSetupRequiredApp({super.key, this.error});
+
+  /// Lỗi khởi tạo (nếu có) để dễ chẩn đoán.
+  final Object? error;
 
   @override
   Widget build(BuildContext context) => MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: AppTheme.dark,
-        home: const Scaffold(
+        home: Scaffold(
           body: Center(
-            child: Padding(
-              padding: EdgeInsets.all(24),
-              child: Text(
-                'Chưa cấu hình Supabase. Hãy chạy ứng dụng với '
-                '--dart-define=SUPABASE_URL=... và '
-                '--dart-define=SUPABASE_ANON_KEY=...',
-                textAlign: TextAlign.center,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 520),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.cloud_off_rounded, size: 48, color: AppTheme.primaryGreen),
+                    const SizedBox(height: 16),
+                    const Text('Chưa cấu hình Supabase',
+                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
+                    const SizedBox(height: 12),
+                    const Text(
+                      '1. Sao chép env.example.json thành env.json và điền SUPABASE_URL, '
+                      'SUPABASE_ANON_KEY (Supabase → Project Settings → API).\n\n'
+                      '2. Chạy:\n'
+                      'flutter run -d chrome --dart-define-from-file=env.json\n\n'
+                      'Hoặc trong VS Code: Run and Debug → chọn "Giai Điệu (Chrome)".',
+                    ),
+                    if (error != null) ...[
+                      const SizedBox(height: 16),
+                      Text('Chi tiết lỗi: $error',
+                          style: const TextStyle(color: Colors.redAccent)),
+                    ],
+                  ],
+                ),
               ),
             ),
           ),

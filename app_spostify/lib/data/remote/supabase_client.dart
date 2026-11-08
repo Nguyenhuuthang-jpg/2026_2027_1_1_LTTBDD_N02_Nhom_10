@@ -9,7 +9,12 @@ class AppSupabase {
   static const String url = String.fromEnvironment('SUPABASE_URL');
   static const String anonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
 
-  static bool get isConfigured => url.isNotEmpty && anonKey.isNotEmpty;
+  /// false nếu chưa truyền khóa hoặc vẫn để giá trị mẫu trong env.example.json.
+  static bool get isConfigured =>
+      url.isNotEmpty &&
+      anonKey.isNotEmpty &&
+      !url.contains('YOUR_PROJECT') &&
+      !anonKey.startsWith('YOUR_');
 
   static Future<void> initialize() async {
     if (!isConfigured) {
@@ -18,7 +23,7 @@ class AppSupabase {
         'Hãy truyền hai giá trị bằng --dart-define.',
       );
     }
-    await Supabase.initialize(url: url, anonKey: anonKey);
+    await Supabase.initialize(url: url, publishableKey: anonKey);
   }
 
   static SupabaseClient get client => Supabase.instance.client;

@@ -5,10 +5,10 @@ import 'supabase_client.dart';
 
 /// Làm việc trực tiếp với Supabase Auth và bảng profiles.
 class AuthRemote {
-  AuthRemote({SupabaseClient? client}) : _client = client;
+  AuthRemote({SupabaseClient? client}) : _overrideClient = client;
 
-  final SupabaseClient? _client;
-  SupabaseClient get client => _client ?? AppSupabase.client;
+  final SupabaseClient? _overrideClient;
+  SupabaseClient get client => _overrideClient ?? AppSupabase.client;
 
   Stream<AuthState> get authStateChanges => client.auth.onAuthStateChange;
 

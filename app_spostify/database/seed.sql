@@ -40,8 +40,12 @@ on conflict do nothing;
 --      Trigger handle_new_user sẽ tự tạo dòng trong public.profiles.
 --   2) Chạy lệnh sau để nâng quyền:
 --
+--   alter table public.profiles disable trigger protect_profile_columns;
 --   update public.profiles set role = 'admin', display_name = 'Minh Anh'
 --   where email = 'admin@giaidieu.vn';
+--   alter table public.profiles enable trigger protect_profile_columns;
+--
+-- Cách nhanh hơn: chạy database/sample_accounts.sql (tạo sẵn admin + user mẫu).
 --
 -- Tài khoản người dùng thường chỉ cần đăng ký bằng màn Đăng ký trong app.
 -- ---------------------------------------------------------------------

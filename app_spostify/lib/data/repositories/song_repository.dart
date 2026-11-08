@@ -1,3 +1,4 @@
+import '../../models/genre.dart';
 import '../../models/song.dart';
 import '../remote/supabase_client.dart';
 
@@ -19,6 +20,11 @@ class SongRepository {
     if (artist.trim().length > 40) return 'Tên nghệ sĩ tối đa 40 ký tự.';
     if (durationSeconds <= 0) return 'Thời lượng phải lớn hơn 0.';
     return null;
+  }
+
+  Future<List<Genre>> fetchGenres() async {
+    final rows = await AppSupabase.client.from('genres').select('id, name').order('name');
+    return rows.map((r) => Genre.fromJson(Map<String, dynamic>.from(r))).toList();
   }
 
   Future<List<Song>> fetchSongs({
