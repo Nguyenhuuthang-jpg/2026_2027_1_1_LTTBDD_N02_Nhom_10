@@ -14,6 +14,15 @@ class Vi {
     'displayName': 'Họ và tên',
     'forgotPassword': 'Quên mật khẩu?',
     'welcomeBack': 'Chào mừng bạn quay trở lại!',
+
+    'loginHeading': 'Chào mừng quay lại',
+    'loginSubtitle': 'Đăng nhập để nghe nhạc của bạn',
+    'passwordHint': 'Nhập mật khẩu',
+    'passwordRequired': 'Vui lòng nhập mật khẩu.',
+    'noAccount': 'Chưa có tài khoản? ',
+    'quickTry':
+        'Thử nhanh: admin@giaidieu.vn hoặc user@giaidieu.vn, mật khẩu 123456',
+
     'createAccount': 'Tạo tài khoản Giai Điệu',
     'loginFailed': 'Đăng nhập thất bại. Vui lòng thử lại.',
     'registerSuccess':

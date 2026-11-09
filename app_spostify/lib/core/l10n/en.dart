@@ -14,6 +14,15 @@ class En {
     'displayName': 'Full name',
     'forgotPassword': 'Forgot password?',
     'welcomeBack': 'Welcome back!',
+
+    'loginHeading': 'Welcome back',
+    'loginSubtitle': 'Sign in to listen to your music',
+    'passwordHint': 'Enter your password',
+    'passwordRequired': 'Please enter your password.',
+    'noAccount': "Don't have an account? ",
+    'quickTry':
+        'Quick try: admin@giaidieu.vn or user@giaidieu.vn, password 123456',
+
     'createAccount': 'Create your Giai Dieu account',
     'loginFailed': 'Sign in failed. Please try again.',
     'registerSuccess':

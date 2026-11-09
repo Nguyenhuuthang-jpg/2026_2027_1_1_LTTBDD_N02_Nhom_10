@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/l10n/app_strings.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/settings_provider.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -69,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 const _BrandMark(),
                                 const SizedBox(height: 24),
                                 Text(
-                                  'Chào mừng quay lại',
+                                  context.tr('loginHeading'),
                                   style: Theme.of(context)
                                       .textTheme
                                       .headlineSmall
@@ -80,14 +82,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
-                                  'Đăng nhập để nghe nhạc của bạn',
+                                  context.tr('loginSubtitle'),
                                   style: TextStyle(
                                     color: Colors.white.withValues(alpha: .62),
                                     fontSize: 14,
                                   ),
                                 ),
                                 const SizedBox(height: 27),
-                                const _FieldCaption('Email'),
+                                _FieldCaption(context.tr('email')),
                                 const SizedBox(height: 7),
                                 TextFormField(
                                   controller: _emailController,
@@ -102,14 +104,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                   validator: Validators.validateEmail,
                                 ),
                                 const SizedBox(height: 17),
-                                const _FieldCaption('Mật khẩu'),
+                                _FieldCaption(context.tr('password')),
                                 const SizedBox(height: 7),
                                 TextFormField(
                                   controller: _passwordController,
                                   obscureText: _obscurePassword,
                                   autofillHints: const [AutofillHints.password],
                                   decoration: InputDecoration(
-                                    hintText: 'Nhập mật khẩu',
+                                    hintText: context.tr('passwordHint'),
                                     prefixIcon: const Icon(
                                       Icons.lock_outline_rounded,
                                     ),
@@ -127,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   validator: (value) =>
                                       value == null || value.isEmpty
-                                      ? 'Vui lòng nhập mật khẩu.'
+                                      ? context.tr('passwordRequired')
                                       : null,
                                   onFieldSubmitted: (_) => _submit(),
                                 ),
@@ -145,7 +147,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                               color: AppTheme.darkBackground,
                                             ),
                                           )
-                                        : const Text('ĐĂNG NHẬP'),
+                                        : Text(
+                                            context.tr('login').toUpperCase(),
+                                          ),
                                   ),
                                 ),
                                 const SizedBox(height: 19),
@@ -153,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   alignment: WrapAlignment.center,
                                   children: [
                                     Text(
-                                      'Chưa có tài khoản? ',
+                                      context.tr('noAccount'),
                                       style: TextStyle(
                                         color: Colors.white.withValues(
                                           alpha: .65,
@@ -167,9 +171,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                               const RegisterScreen(),
                                         ),
                                       ),
-                                      child: const Text(
-                                        'Đăng ký',
-                                        style: TextStyle(
+                                      child: Text(
+                                        context.tr('register'),
+                                        style: const TextStyle(
                                           color: AppTheme.primaryGreen,
                                           fontWeight: FontWeight.w700,
                                         ),
@@ -179,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 const SizedBox(height: 20),
                                 Text(
-                                  'Thử nhanh: admin@giaidieu.vn hoặc user@giaidieu.vn, mật khẩu 123456',
+                                  context.tr('quickTry'),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white.withValues(alpha: .42),
@@ -306,27 +310,37 @@ class _FieldCaption extends StatelessWidget {
 class _LanguageToggle extends StatelessWidget {
   const _LanguageToggle();
   @override
-  Widget build(BuildContext context) => Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      TextButton(
-        onPressed: null,
-        child: const Text(
-          'Tiếng Việt',
-          style: TextStyle(
-            color: AppTheme.primaryGreen,
-            fontWeight: FontWeight.w700,
+  Widget build(BuildContext context) {
+    final isVi = context.watch<SettingsProvider>().isVietnamese;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextButton(
+          onPressed: () => context.read<SettingsProvider>().setLanguage('vi'),
+          child: Text(
+            'Tiếng Việt',
+            style: TextStyle(
+              color: isVi
+                  ? AppTheme.primaryGreen
+                  : Colors.white.withValues(alpha: .55),
+              fontWeight: isVi ? FontWeight.w700 : FontWeight.w400,
+            ),
           ),
         ),
-      ),
-      Text('•', style: TextStyle(color: Colors.white.withValues(alpha: .35))),
-      TextButton(
-        onPressed: null,
-        child: Text(
-          'English',
-          style: TextStyle(color: Colors.white.withValues(alpha: .55)),
+        Text('•', style: TextStyle(color: Colors.white.withValues(alpha: .35))),
+        TextButton(
+          onPressed: () => context.read<SettingsProvider>().setLanguage('en'),
+          child: Text(
+            'English',
+            style: TextStyle(
+              color: !isVi
+                  ? AppTheme.primaryGreen
+                  : Colors.white.withValues(alpha: .55),
+              fontWeight: !isVi ? FontWeight.w700 : FontWeight.w400,
+            ),
+          ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 }

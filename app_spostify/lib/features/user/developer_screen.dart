@@ -14,12 +14,12 @@ class DeveloperScreen extends StatelessWidget {
       role: 'Xác thực, database',
     ),
     (
-      name: 'Nguyễn Xuân	Thành',
+      name: 'Nguyễn Xuân Thành',
       studentId: 'MSSV: 24100115',
       role: 'Giao diện người dùng',
     ),
     (
-      name: 'Kiều Vĩnh	Tiến',
+      name: 'Kiều Vĩnh Tiến',
       studentId: 'MSSV: 24100240',
       role: 'Giao diện quản trị',
     ),
