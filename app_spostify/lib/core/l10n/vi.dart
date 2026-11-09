@@ -16,7 +16,8 @@ class Vi {
     'welcomeBack': 'Chào mừng bạn quay trở lại!',
     'createAccount': 'Tạo tài khoản Giai Điệu',
     'loginFailed': 'Đăng nhập thất bại. Vui lòng thử lại.',
-    'registerSuccess': 'Đăng ký thành công. Hãy kiểm tra email nếu được yêu cầu xác nhận.',
+    'registerSuccess':
+        'Đăng ký thành công. Hãy kiểm tra email nếu được yêu cầu xác nhận.',
     'admin': 'Quản trị viên',
     'user': 'Người dùng',
     'loading': 'Đang tải...',
@@ -73,8 +74,7 @@ class Vi {
     'darkMode': 'Giao diện tối',
     'about': 'Thông tin nhóm',
     'version': 'Phiên bản',
-    'team': 'Nhóm ii · Lập trình thiết bị di động',
-    'mem': 'Thành viên 1, 2, 3: điền tên và MSSV',
+    'team': 'Nhóm 10 · Lớp N02 · Lập trình thiết bị di động',
 
     // Quản trị
     'st_users': 'Người dùng',

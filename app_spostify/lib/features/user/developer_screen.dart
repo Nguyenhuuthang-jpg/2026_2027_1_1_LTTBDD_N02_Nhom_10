@@ -8,9 +8,21 @@ class DeveloperScreen extends StatelessWidget {
   const DeveloperScreen({super.key});
 
   static const List<({String name, String studentId, String role})> _members = [
-    (name: 'Thành viên 1', studentId: 'MSSV', role: 'Xác thực, database'),
-    (name: 'Thành viên 2', studentId: 'MSSV', role: 'Giao diện người dùng'),
-    (name: 'Thành viên 3', studentId: 'MSSV', role: 'Giao diện quản trị'),
+    (
+      name: 'Nguyễn Hữu Thắng',
+      studentId: 'MSSV: 24100209',
+      role: 'Xác thực, database',
+    ),
+    (
+      name: 'Nguyễn Xuân	Thành',
+      studentId: 'MSSV: 24100115',
+      role: 'Giao diện người dùng',
+    ),
+    (
+      name: 'Kiều Vĩnh	Tiến',
+      studentId: 'MSSV: 24100240',
+      role: 'Giao diện quản trị',
+    ),
   ];
 
   static const List<String> _stack = [
@@ -34,15 +46,25 @@ class DeveloperScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  const Icon(Icons.graphic_eq_rounded, size: 48, color: AppTheme.primaryGreen),
+                  const Icon(
+                    Icons.graphic_eq_rounded,
+                    size: 48,
+                    color: AppTheme.primaryGreen,
+                  ),
                   const SizedBox(height: 8),
-                  Text(context.tr('appName'),
-                      style: theme.textTheme.headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.w800)),
+                  Text(
+                    context.tr('appName'),
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
                   const SizedBox(height: 4),
                   Text(context.tr('team'), textAlign: TextAlign.center),
                   const SizedBox(height: 4),
-                  Text('${context.tr('version')} 1.0.0', style: theme.textTheme.bodySmall),
+                  Text(
+                    '${context.tr('version')} 1.0.0',
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ],
               ),
             ),
@@ -53,11 +75,18 @@ class DeveloperScreen extends StatelessWidget {
               child: ListTile(
                 leading: CircleAvatar(
                   backgroundColor: AppTheme.primaryGreen,
-                  child: Text(m.name.characters.first,
-                      style: const TextStyle(
-                          color: AppTheme.darkBackground, fontWeight: FontWeight.w800)),
+                  child: Text(
+                    m.name.characters.first,
+                    style: const TextStyle(
+                      color: AppTheme.darkBackground,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
                 ),
-                title: Text(m.name, style: const TextStyle(fontWeight: FontWeight.w700)),
+                title: Text(
+                  m.name,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
                 subtitle: Text('${m.studentId} · ${m.role}'),
               ),
             ),
@@ -70,8 +99,11 @@ class DeveloperScreen extends StatelessWidget {
             children: [for (final s in _stack) Chip(label: Text(s))],
           ),
           const SizedBox(height: 16),
-          Text(context.tr('mem'),
-              textAlign: TextAlign.center, style: theme.textTheme.bodySmall),
+          Text(
+            context.tr('mem'),
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall,
+          ),
         ],
       ),
     );

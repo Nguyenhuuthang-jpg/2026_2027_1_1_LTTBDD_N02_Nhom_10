@@ -16,7 +16,8 @@ class En {
     'welcomeBack': 'Welcome back!',
     'createAccount': 'Create your Giai Dieu account',
     'loginFailed': 'Sign in failed. Please try again.',
-    'registerSuccess': 'Account created. Check your email if confirmation is required.',
+    'registerSuccess':
+        'Account created. Check your email if confirmation is required.',
     'admin': 'Administrator',
     'user': 'User',
     'loading': 'Loading...',
@@ -73,8 +74,7 @@ class En {
     'darkMode': 'Dark mode',
     'about': 'About the team',
     'version': 'Version',
-    'team': 'Team ii · Mobile Programming',
-    'mem': 'Members 1, 2, 3: fill in names and student IDs',
+    'team': 'Team 10 · Class N02 · Mobile Programming',
 
     // Admin
     'st_users': 'Users',
