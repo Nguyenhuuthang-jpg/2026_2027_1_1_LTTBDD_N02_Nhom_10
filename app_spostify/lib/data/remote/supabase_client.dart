@@ -7,18 +7,27 @@ class AppSupabase {
   AppSupabase._();
 
   static const String url = String.fromEnvironment('SUPABASE_URL');
-  static const String anonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
+  static const String publishableKey = String.fromEnvironment(
+    'SUPABASE_PUBLISHABLE_KEY',
+    defaultValue: String.fromEnvironment('SUPABASE_ANON_KEY'),
+  );
 
-  static bool get isConfigured => url.isNotEmpty && anonKey.isNotEmpty;
+  @Deprecated('Use publishableKey instead.')
+  static const String anonKey = publishableKey;
+
+  static bool get isConfigured => url.isNotEmpty && publishableKey.isNotEmpty;
 
   static Future<void> initialize() async {
     if (!isConfigured) {
       throw StateError(
-        'Thiếu SUPABASE_URL hoặc SUPABASE_ANON_KEY. '
+        'Thiếu SUPABASE_URL hoặc SUPABASE_PUBLISHABLE_KEY. '
         'Hãy truyền hai giá trị bằng --dart-define.',
       );
     }
-    await Supabase.initialize(url: url, anonKey: anonKey);
+    await Supabase.initialize(
+      url: url,
+      publishableKey: publishableKey,
+    );
   }
 
   static SupabaseClient get client => Supabase.instance.client;

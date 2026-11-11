@@ -144,7 +144,8 @@ class _MusicBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         height: 174,
-        margin: const EdgeInsets.symmetric(horizontal: -22),
+        width: double.infinity,
+        margin: EdgeInsets.zero,
         decoration: const BoxDecoration(
           gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF244D36), Color(0xFF14251B), Color(0xFF101412)]),
         ),
