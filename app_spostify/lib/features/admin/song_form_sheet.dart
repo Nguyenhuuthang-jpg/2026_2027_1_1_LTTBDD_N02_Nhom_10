@@ -34,6 +34,7 @@ class _SongFormSheetState extends State<SongFormSheet> {
   late final TextEditingController _duration;
   late final TextEditingController _cover;
   late final TextEditingController _audio;
+  late final TextEditingController _lyrics;
   int? _genreId;
   bool _visible = true;
   bool _saving = false;
@@ -49,19 +50,28 @@ class _SongFormSheetState extends State<SongFormSheet> {
     _duration = TextEditingController(text: s?.durationLabel ?? '');
     _cover = TextEditingController(text: s?.coverUrl ?? '');
     _audio = TextEditingController(text: s?.audioUrl ?? '');
+    _lyrics = TextEditingController(text: s?.lyrics ?? '');
     _genreId = s?.genreId;
     _visible = s?.isVisible ?? true;
   }
 
   @override
   void dispose() {
-    for (final c in [_title, _artist, _duration, _cover, _audio]) {
+    for (final c in [_title, _artist, _duration, _cover, _audio, _lyrics]) {
       c.dispose();
     }
     super.dispose();
   }
 
   String? _nullIfEmpty(String v) => v.trim().isEmpty ? null : v.trim();
+
+  String? _httpsValidator(String? v) {
+    final text = (v ?? '').trim();
+    if (text.isEmpty) return null; // không bắt buộc
+    final uri = Uri.tryParse(text);
+    final ok = uri != null && uri.scheme == 'https' && uri.host.isNotEmpty;
+    return ok ? null : context.tr('urlMustBeHttps');
+  }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -79,12 +89,15 @@ class _SongFormSheetState extends State<SongFormSheet> {
       durationSeconds: seconds,
       coverUrl: _nullIfEmpty(_cover.text),
       audioUrl: _nullIfEmpty(_audio.text),
+      lyrics: _nullIfEmpty(_lyrics.text),
       isVisible: _visible,
       playCount: widget.song?.playCount ?? 0,
     );
 
     setState(() => _saving = true);
-    final ok = _isEdit ? await provider.editSong(base) : await provider.addSong(base);
+    final ok = _isEdit
+        ? await provider.editSong(base)
+        : await provider.addSong(base);
     if (!mounted) return;
     setState(() => _saving = false);
 
@@ -92,7 +105,9 @@ class _SongFormSheetState extends State<SongFormSheet> {
       navigator.pop();
       messenger.showSnackBar(SnackBar(content: Text(savedMsg)));
     } else {
-      messenger.showSnackBar(SnackBar(content: Text(provider.errorMessage ?? 'Error')));
+      messenger.showSnackBar(
+        SnackBar(content: Text(provider.errorMessage ?? 'Error')),
+      );
     }
   }
 
@@ -103,7 +118,9 @@ class _SongFormSheetState extends State<SongFormSheet> {
     final genreValue = genres.any((g) => g.id == _genreId) ? _genreId : null;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
         child: Form(
@@ -111,11 +128,11 @@ class _SongFormSheetState extends State<SongFormSheet> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(context.tr(_isEdit ? 'd_edit' : 'd_add'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(fontWeight: FontWeight.w800)),
+              Text(
+                context.tr(_isEdit ? 'd_edit' : 'd_add'),
+                style: Theme.of(context).textTheme.titleLarge
+                    ?.copyWith(fontWeight: FontWeight.w800),
+              ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _title,
@@ -146,12 +163,19 @@ class _SongFormSheetState extends State<SongFormSheet> {
                     child: DropdownButtonFormField<int?>(
                       initialValue: genreValue,
                       isExpanded: true,
-                      decoration: InputDecoration(labelText: context.tr('f_genre')),
+                      decoration: InputDecoration(
+                        labelText: context.tr('f_genre'),
+                      ),
                       items: [
                         DropdownMenuItem<int?>(
-                            value: null, child: Text(context.tr('noGenre'))),
+                          value: null,
+                          child: Text(context.tr('noGenre')),
+                        ),
                         for (final g in genres)
-                          DropdownMenuItem<int?>(value: g.id, child: Text(g.name)),
+                          DropdownMenuItem<int?>(
+                            value: g.id,
+                            child: Text(g.name),
+                          ),
                       ],
                       onChanged: (v) => setState(() => _genreId = v),
                     ),
@@ -165,8 +189,9 @@ class _SongFormSheetState extends State<SongFormSheet> {
                         labelText: context.tr('f_dur'),
                         hintText: '3:45',
                       ),
-                      validator: (v) =>
-                          Song.parseDuration(v ?? '') == null ? context.trNow('e_dur') : null,
+                      validator: (v) => Song.parseDuration(v ?? '') == null
+                          ? context.trNow('e_dur')
+                          : null,
                     ),
                   ),
                 ],
@@ -176,12 +201,25 @@ class _SongFormSheetState extends State<SongFormSheet> {
                 controller: _cover,
                 keyboardType: TextInputType.url,
                 decoration: InputDecoration(labelText: context.tr('f_cover')),
+                validator: _httpsValidator,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _audio,
                 keyboardType: TextInputType.url,
                 decoration: InputDecoration(labelText: context.tr('f_audio')),
+                validator: _httpsValidator,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _lyrics,
+                keyboardType: TextInputType.multiline,
+                minLines: 3,
+                maxLines: 8,
+                decoration: InputDecoration(
+                  labelText: context.tr('f_lyrics'),
+                  alignLabelWithHint: true,
+                ),
               ),
               const SizedBox(height: 8),
               SwitchListTile(
@@ -196,7 +234,10 @@ class _SongFormSheetState extends State<SongFormSheet> {
                 onPressed: _saving ? null : _submit,
                 child: _saving
                     ? const SizedBox(
-                        width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
                     : Text(context.tr('save')),
               ),
               const SizedBox(height: 8),

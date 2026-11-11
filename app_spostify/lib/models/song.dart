@@ -11,6 +11,7 @@ class Song {
   final int durationSeconds;
   final String? coverUrl;
   final String? audioUrl;
+  final String? lyrics;
   final int playCount;
   final bool isVisible;
   final DateTime? createdAt;
@@ -24,6 +25,7 @@ class Song {
     required this.durationSeconds,
     this.coverUrl,
     this.audioUrl,
+    this.lyrics,
     this.playCount = 0,
     this.isVisible = true,
     this.createdAt,
@@ -51,10 +53,13 @@ class Song {
       title: json['title'] as String,
       artist: json['artist'] as String,
       genreId: json['genre_id'] as int?,
-      genreName: genre is Map<String, dynamic> ? genre['name'] as String? : null,
+      genreName: genre is Map<String, dynamic>
+          ? genre['name'] as String?
+          : null,
       durationSeconds: json['duration_seconds'] as int,
       coverUrl: json['cover_url'] as String?,
       audioUrl: json['audio_url'] as String?,
+      lyrics: json['lyrics'] as String?,
       playCount: (json['play_count'] as num?)?.toInt() ?? 0,
       isVisible: json['is_visible'] as bool? ?? true,
       createdAt: json['created_at'] == null
@@ -65,14 +70,15 @@ class Song {
 
   /// Dùng cho insert / update. Không gồm id, play_count, created_at (do DB quản lý).
   Map<String, dynamic> toJson() => {
-        'title': title,
-        'artist': artist,
-        'genre_id': genreId,
-        'duration_seconds': durationSeconds,
-        'cover_url': coverUrl,
-        'audio_url': audioUrl,
-        'is_visible': isVisible,
-      };
+    'title': title,
+    'artist': artist,
+    'genre_id': genreId,
+    'duration_seconds': durationSeconds,
+    'cover_url': coverUrl,
+    'audio_url': audioUrl,
+    'lyrics': lyrics,
+    'is_visible': isVisible,
+  };
 
   Song copyWith({
     String? title,
@@ -82,20 +88,21 @@ class Song {
     int? durationSeconds,
     String? coverUrl,
     String? audioUrl,
+    String? lyrics,
     int? playCount,
     bool? isVisible,
-  }) =>
-      Song(
-        id: id,
-        title: title ?? this.title,
-        artist: artist ?? this.artist,
-        genreId: genreId ?? this.genreId,
-        genreName: genreName ?? this.genreName,
-        durationSeconds: durationSeconds ?? this.durationSeconds,
-        coverUrl: coverUrl ?? this.coverUrl,
-        audioUrl: audioUrl ?? this.audioUrl,
-        playCount: playCount ?? this.playCount,
-        isVisible: isVisible ?? this.isVisible,
-        createdAt: createdAt,
-      );
+  }) => Song(
+    id: id,
+    title: title ?? this.title,
+    artist: artist ?? this.artist,
+    genreId: genreId ?? this.genreId,
+    genreName: genreName ?? this.genreName,
+    durationSeconds: durationSeconds ?? this.durationSeconds,
+    coverUrl: coverUrl ?? this.coverUrl,
+    audioUrl: audioUrl ?? this.audioUrl,
+    lyrics: lyrics ?? this.lyrics,
+    playCount: playCount ?? this.playCount,
+    isVisible: isVisible ?? this.isVisible,
+    createdAt: createdAt,
+  );
 }

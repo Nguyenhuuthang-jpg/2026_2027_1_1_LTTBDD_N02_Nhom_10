@@ -8,23 +8,30 @@ import '../services/audio_service.dart';
 
 class PlayerProvider extends ChangeNotifier {
   PlayerProvider({AudioService? audioService})
-      : _audioService = audioService ?? AudioService() {
-    _subscriptions.add(_audioService.playerStateStream.listen((state) {
-      _isPlaying = state.playing;
-      final justCompleted = state.processingState == ProcessingState.completed &&
-          _processingState != ProcessingState.completed;
-      _processingState = state.processingState;
-      notifyListeners();
-      if (justCompleted) playNext();
-    }));
-    _subscriptions.add(_audioService.positionStream.listen((value) {
-      _position = value;
-      notifyListeners();
-    }));
-    _subscriptions.add(_audioService.durationStream.listen((value) {
-      _duration = value ?? Duration.zero;
-      notifyListeners();
-    }));
+    : _audioService = audioService ?? AudioService() {
+    _subscriptions.add(
+      _audioService.playerStateStream.listen((state) {
+        _isPlaying = state.playing;
+        final justCompleted =
+            state.processingState == ProcessingState.completed &&
+            _processingState != ProcessingState.completed;
+        _processingState = state.processingState;
+        notifyListeners();
+        if (justCompleted) playNext();
+      }),
+    );
+    _subscriptions.add(
+      _audioService.positionStream.listen((value) {
+        _position = value;
+        notifyListeners();
+      }),
+    );
+    _subscriptions.add(
+      _audioService.durationStream.listen((value) {
+        _duration = value ?? Duration.zero;
+        notifyListeners();
+      }),
+    );
   }
 
   final AudioService _audioService;
@@ -80,12 +87,14 @@ class PlayerProvider extends ChangeNotifier {
       await _audioService.load(song.audioUrl!);
       onSongStarted?.call(song);
       // play() chỉ hoàn thành khi dừng phát, nên không await để tránh treo trạng thái loading.
-      unawaited(_audioService.play().catchError((Object error) {
-        _errorMessage = 'Không thể phát bài hát: $error';
-        notifyListeners();
-      }));
-    } catch (error) {
-      _errorMessage = 'Không thể phát bài hát: $error';
+      unawaited(
+        _audioService.play().catchError((Object _) {
+          _errorMessage = 'Không thể phát bài hát.';
+          notifyListeners();
+        }),
+      );
+    } catch (_) {
+      _errorMessage = 'Không thể phát bài hát.';
     } finally {
       _isLoading = false;
       notifyListeners();
