@@ -5,12 +5,12 @@ insert into public.genres (name) values
 on conflict (name) do nothing;
 
 -- Bài hát (khớp bản demo giao diện)
-insert into public.songs (title, artist, genre_id, duration_seconds, play_count, is_visible) values
-  ('Ngày chưa giông bão', 'Bùi Lan Hương',  (select id from public.genres where name = 'Indie'),    252, 12840, true),
-  ('Một đêm say',         'Thịnh Suy',      (select id from public.genres where name = 'Chill'),    228, 11230, true),
-  ('Có em',               'Madihu',         (select id from public.genres where name = 'Pop'),      201,  9870, true),
-  ('Đêm thành phố',       'Nhiều nghệ sĩ',  (select id from public.genres where name = 'Chill'),    185,  6420, true),
-  ('Acoustic Việt',       'Tuyển chọn',     (select id from public.genres where name = 'Acoustic'), 280,  4310, false);
+insert into public.songs (title, artist, genre_id, duration_seconds, play_count, is_visible, audio_url) values
+  ('Ngày chưa giông bão', 'Bùi Lan Hương',  (select id from public.genres where name = 'Indie'),    252, 12840, true, 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'),
+  ('Một đêm say',         'Thịnh Suy',      (select id from public.genres where name = 'Chill'),    228, 11230, true, 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'),
+  ('Có em',               'Madihu',         (select id from public.genres where name = 'Pop'),      201,  9870, true, 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'),
+  ('Đêm thành phố',       'Nhiều nghệ sĩ',  (select id from public.genres where name = 'Chill'),    185,  6420, true, 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3'),
+  ('Acoustic Việt',       'Tuyển chọn',     (select id from public.genres where name = 'Acoustic'), 280,  4310, false, 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3');
 
 -- Playlist
 insert into public.playlists (name, description, is_visible) values

@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Spostify (Chrome)",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "app_spostify",
+      "program": "lib/main.dart",
+      "deviceId": "chrome",
+      "toolArgs": ["--dart-define-from-file=env.json"]
+    },
+    {
+      "name": "Spostify (thiết bị đang chọn)",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "app_spostify",
+      "program": "lib/main.dart",
+      "toolArgs": ["--dart-define-from-file=env.json"]
+    }
+  ]
+}
