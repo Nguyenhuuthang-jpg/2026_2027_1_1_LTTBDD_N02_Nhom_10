@@ -2,7 +2,7 @@
 
 ## 1. Chuẩn bị Supabase (làm một lần)
 1. Tạo project tại https://supabase.com.
-2. Vào **SQL Editor**, chạy lần lượt: `database/schema.sql` → `database/policies.sql` → `database/seed.sql`.
+2. Vào **SQL Editor**, chạy lần lượt: `database/schema.sql` → `database/policies.sql` → `database/storage.sql` → `database/seed.sql`.
 3. Tạo tài khoản admin: **Authentication → Users → Add user** (tick *Auto Confirm User*), rồi chạy:
    ```sql
    update public.profiles set role = 'admin' where email = 'admin@giaidieu.vn';
@@ -42,5 +42,6 @@ flutter test
 - `lib/providers` – trạng thái (Provider), gọi `lib/data/repositories`
 - `lib/data/local` – cài đặt + cache ngoại tuyến (shared_preferences)
 
-Bài hát chỉ phát được khi có `audio_url` (link .mp3 công khai, ví dụ từ Supabase Storage);
-dữ liệu mẫu trong `seed.sql` chưa có link nhạc.
+Bài hát chỉ phát được khi có `audio_url` (link .mp3 công khai). File nhạc lưu trên Supabase Storage,
+bucket public `songs` (tạo bằng `database/storage.sql`); dữ liệu mẫu trong `seed.sql` đã có sẵn link.
+Thêm bài mới: tải file .mp3 vào bucket `songs`, lấy Public URL rồi dán vào ô link nhạc ở màn admin.
