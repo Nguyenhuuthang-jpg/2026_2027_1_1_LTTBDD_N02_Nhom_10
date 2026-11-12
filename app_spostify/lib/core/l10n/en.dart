@@ -106,6 +106,7 @@ class En {
     'f_audio': 'Audio file (.mp3 URL, optional)',
     'f_lyrics': 'Lyrics (optional)',
     'urlMustBeHttps': 'The link must start with https://',
+    'audioUrlInvalid': 'Audio link must be https://... or asset:///assets/audio/file-name.mp3',
     'tabInfo': 'Info',
     'tabLyrics': 'Lyrics',
     'noLyrics': 'No lyrics yet.',

@@ -49,3 +49,6 @@ app.*.map.json
 
 # Bao cao chay Tester Agent (co the bo comment neu muon commit report)
 reports/tester_agent/
+
+# File nhac co ban quyen chi de tren may, khong dua len GitHub
+assets/audio/*.mp3

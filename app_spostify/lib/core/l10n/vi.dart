@@ -106,6 +106,7 @@ class Vi {
     'f_audio': 'File nhạc (URL .mp3, không bắt buộc)',
     'f_lyrics': 'Lời bài hát (không bắt buộc)',
     'urlMustBeHttps': 'Đường dẫn phải bắt đầu bằng https://',
+    'audioUrlInvalid': 'Link nhạc phải là https://... hoặc asset:///assets/audio/ten-file.mp3',
     'tabInfo': 'Thông tin',
     'tabLyrics': 'Lời bài hát',
     'noLyrics': 'Chưa có lời bài hát.',

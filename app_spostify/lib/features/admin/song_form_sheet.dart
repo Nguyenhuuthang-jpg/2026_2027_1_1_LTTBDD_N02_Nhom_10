@@ -6,6 +6,7 @@ import '../../core/theme/app_theme.dart';
 import '../../data/repositories/song_repository.dart';
 import '../../models/song.dart';
 import '../../providers/song_provider.dart';
+import '../../services/audio_service.dart';
 
 /// Mở bảng trượt thêm (song == null) hoặc sửa bài hát.
 Future<void> showSongFormSheet(BuildContext context, {Song? song}) {
@@ -71,6 +72,17 @@ class _SongFormSheetState extends State<SongFormSheet> {
     final uri = Uri.tryParse(text);
     final ok = uri != null && uri.scheme == 'https' && uri.host.isNotEmpty;
     return ok ? null : context.tr('urlMustBeHttps');
+  }
+
+  /// Link nhạc: https://... hoặc file trong app dạng asset:///assets/audio/ten-file.mp3
+  String? _audioValidator(String? v) {
+    final text = (v ?? '').trim();
+    if (text.startsWith(AudioService.assetPrefix)) {
+      final path = text.substring(AudioService.assetPrefix.length);
+      final ok = path.startsWith('assets/audio/') && path.length > 'assets/audio/'.length;
+      return ok ? null : context.tr('audioUrlInvalid');
+    }
+    return _httpsValidator(v) == null ? null : context.tr('audioUrlInvalid');
   }
 
   Future<void> _submit() async {
@@ -208,7 +220,7 @@ class _SongFormSheetState extends State<SongFormSheet> {
                 controller: _audio,
                 keyboardType: TextInputType.url,
                 decoration: InputDecoration(labelText: context.tr('f_audio')),
-                validator: _httpsValidator,
+                validator: _audioValidator,
               ),
               const SizedBox(height: 16),
               TextFormField(

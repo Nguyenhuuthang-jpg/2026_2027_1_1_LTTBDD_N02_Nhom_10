@@ -17,7 +17,17 @@ class AudioService {
   Duration? get duration => _player.duration;
   ProcessingState get processingState => _player.processingState;
 
-  Future<Duration?> load(String url) => _player.setUrl(url);
+  /// Tiền tố đường dẫn cho file nhạc đóng gói trong app, ví dụ
+  /// `asset:///assets/audio/mot-dem-say.mp3`.
+  static const assetPrefix = 'asset:///';
+
+  /// Tải nguồn nhạc: link online (https://...) hoặc file trong thư mục assets.
+  Future<Duration?> load(String url) {
+    if (url.startsWith(assetPrefix)) {
+      return _player.setAsset(url.substring(assetPrefix.length));
+    }
+    return _player.setUrl(url);
+  }
   Future<void> play() => _player.play();
   Future<void> pause() => _player.pause();
   Future<void> stop() => _player.stop();
