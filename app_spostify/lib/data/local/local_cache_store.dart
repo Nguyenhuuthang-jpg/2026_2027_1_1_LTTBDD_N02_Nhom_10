@@ -1,24 +1,28 @@
 import 'dart:convert';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../models/playlist.dart';
 import '../../models/song.dart';
-import 'prefs_store.dart';
 
-class AppDatabase {
-  AppDatabase(this._store);
+class LocalCacheStore {
+  LocalCacheStore._(this._prefs);
 
   static const _kSongs = 'cache_songs';
   static const _kPlaylists = 'cache_playlists';
 
-  final PrefsStore _store;
+  final SharedPreferences _prefs;
 
-  Future<void> cacheSongs(List<Song> songs) => _store.setString(
+  static Future<LocalCacheStore> create() async =>
+      LocalCacheStore._(await SharedPreferences.getInstance());
+
+  Future<void> cacheSongs(List<Song> songs) => _prefs.setString(
         _kSongs,
         jsonEncode(songs.map(_songToCache).toList()),
       );
 
   List<Song> cachedSongs() {
-    final raw = _store.getString(_kSongs);
+    final raw = _prefs.getString(_kSongs);
     if (raw == null) return const [];
     try {
       return (jsonDecode(raw) as List)
@@ -29,7 +33,7 @@ class AppDatabase {
     }
   }
 
-  Future<void> cachePlaylists(List<Playlist> playlists) => _store.setString(
+  Future<void> cachePlaylists(List<Playlist> playlists) => _prefs.setString(
         _kPlaylists,
         jsonEncode(playlists
             .map((p) => {
@@ -43,7 +47,7 @@ class AppDatabase {
       );
 
   List<Playlist> cachedPlaylists() {
-    final raw = _store.getString(_kPlaylists);
+    final raw = _prefs.getString(_kPlaylists);
     if (raw == null) return const [];
     try {
       return (jsonDecode(raw) as List)
@@ -55,8 +59,8 @@ class AppDatabase {
   }
 
   Future<void> clear() async {
-    await _store.remove(_kSongs);
-    await _store.remove(_kPlaylists);
+    await _prefs.remove(_kSongs);
+    await _prefs.remove(_kPlaylists);
   }
 
   static Map<String, dynamic> _songToCache(Song s) => {

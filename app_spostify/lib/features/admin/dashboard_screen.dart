@@ -118,53 +118,70 @@ class _DailyBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const height = 140.0;
     final maxValue = math.max(1, values.fold<int>(0, math.max));
     final muted = Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5);
     final today = DateTime.now();
 
     return SizedBox(
-      height: height + 36,
+      height: 190,
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (var i = 0; i < values.length; i++)
             Expanded(
               child: Tooltip(
                 message: '${values[i]}',
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    if (i == values.length - 1)
-                      Text('${values[i]}',
-                          style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                              color: AppTheme.primaryGreen)),
-                    const SizedBox(height: 4),
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 400),
-                      height: math.max(3, values[i] / maxValue * height),
-                      margin: const EdgeInsets.symmetric(horizontal: 3),
-                      decoration: BoxDecoration(
-                        color: i == values.length - 1
-                            ? AppTheme.primaryGreen
-                            : AppTheme.primaryGreen.withValues(alpha: 0.35),
-                        borderRadius: BorderRadius.circular(4),
+                    SizedBox(
+                      height: 16,
+                      child: i == values.length - 1
+                          ? Text(
+                              '${values[i]}',
+                              maxLines: 1,
+                              softWrap: false,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: AppTheme.primaryGreen,
+                              ),
+                            )
+                          : null,
+                    ),
+
+                    Expanded(
+                      child: AnimatedFractionallySizedBox(
+                        duration: const Duration(milliseconds: 400),
+                        alignment: Alignment.bottomCenter,
+                        widthFactor: 1,
+                        heightFactor: math.max(0.02, values[i] / maxValue),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 3),
+                          decoration: BoxDecoration(
+                            color: i == values.length - 1
+                                ? AppTheme.primaryGreen
+                                : AppTheme.primaryGreen.withValues(alpha: 0.35),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      i == values.length - 1
-                          ? todayLabel
-                          : (i % 3 == 1
-                              ? DateFormat('dd/MM')
-                                  .format(today.subtract(Duration(days: 13 - i)))
-                              : ''),
-                      maxLines: 1,
-                      overflow: TextOverflow.visible,
-                      softWrap: false,
-                      style: TextStyle(fontSize: 9, color: muted),
+
+                    SizedBox(
+                      height: 14,
+                      child: Text(
+                        i == values.length - 1
+                            ? todayLabel
+                            : (i % 3 == 1
+                                ? DateFormat('dd/MM').format(
+                                    today.subtract(Duration(days: 13 - i)))
+                                : ''),
+                        maxLines: 1,
+                        overflow: TextOverflow.visible,
+                        softWrap: false,
+                        style: TextStyle(fontSize: 9, color: muted),
+                      ),
                     ),
                   ],
                 ),

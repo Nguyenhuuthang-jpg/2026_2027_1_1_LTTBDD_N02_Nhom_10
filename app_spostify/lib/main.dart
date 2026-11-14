@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'app.dart';
+import 'data/local/local_cache_store.dart';
 import 'data/local/prefs_store.dart';
 import 'data/remote/supabase_client.dart';
 
@@ -14,6 +15,9 @@ Future<void> main() async {
 
   try {
     await AppSupabase.initialize();
+    final prefs = await PrefsStore.create();
+    final cache = await LocalCacheStore.create();
+    runApp(GiaiDieuApp(prefs: prefs, cache: cache));
   } catch (error, stackTrace) {
     FlutterError.reportError(FlutterErrorDetails(
       exception: error,
@@ -21,16 +25,29 @@ Future<void> main() async {
       library: 'Giai Điệu startup',
       context: ErrorDescription('while initializing Supabase'),
     ));
-    runApp(SupabaseSetupRequiredApp(error: error));
-    return;
+    runApp(const SupabaseSetupRequiredApp());
   }
+}
 
-  PrefsStore? prefs;
-  try {
-    prefs = await PrefsStore.create();
-  } catch (error) {
-    debugPrint('Không mở được shared_preferences: $error');
+class SupabaseSetupRequiredApp extends StatelessWidget {
+  const SupabaseSetupRequiredApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Center(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Text(
+              'Chưa kết nối được Supabase.\n'
+              'Kiểm tra lại URL và key trong supabase_client.dart.',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ),
+    );
   }
-
-  runApp(GiaiDieuApp(prefs: prefs));
 }

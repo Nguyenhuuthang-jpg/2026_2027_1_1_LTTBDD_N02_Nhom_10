@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/l10n/app_strings.dart';
 import '../../core/theme/app_theme.dart';
-import '../../data/repositories/playlist_repository.dart';
+import '../../core/utils/validators.dart';
 import '../../models/playlist.dart';
 import '../../providers/playlist_provider.dart';
 import '../../providers/song_provider.dart';
@@ -132,7 +132,7 @@ Future<void> showPlaylistFormDialog(BuildContext context, {Playlist? playlist}) 
                 autofocus: true,
                 maxLength: 60,
                 decoration: InputDecoration(labelText: context.tr('pl_name')),
-                validator: (v) => PlaylistRepository.validateName(v ?? ''),
+                validator: (v) => Validators.validatePlaylistName(v ?? ''),
               ),
               const SizedBox(height: 8),
               TextFormField(

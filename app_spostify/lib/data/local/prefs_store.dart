@@ -6,6 +6,7 @@ class PrefsStore {
 
   static const _kThemeMode = 'theme_mode';
   static const _kLanguage = 'language';
+  static const _kOnboardingSeen = 'onboarding_seen';
 
   final SharedPreferences _prefs;
 
@@ -30,7 +31,8 @@ class PrefsStore {
 
   Future<void> setLanguageCode(String code) => _prefs.setString(_kLanguage, code);
 
-  String? getString(String key) => _prefs.getString(key);
-  Future<void> setString(String key, String value) => _prefs.setString(key, value);
-  Future<void> remove(String key) => _prefs.remove(key);
+  bool get hasSeenOnboarding => _prefs.getBool(_kOnboardingSeen) ?? false;
+
+  Future<void> setOnboardingSeen([bool seen = true]) =>
+      _prefs.setBool(_kOnboardingSeen, seen);
 }

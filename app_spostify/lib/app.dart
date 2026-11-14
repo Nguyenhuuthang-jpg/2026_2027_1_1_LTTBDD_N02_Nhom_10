@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'core/theme/app_theme.dart';
-import 'data/local/app_database.dart';
+import 'data/local/local_cache_store.dart';
 import 'data/local/prefs_store.dart';
+import 'data/repositories/playlist_repository.dart';
+import 'data/repositories/song_repository.dart';
 import 'features/admin/admin_shell.dart';
 import 'features/auth/login_screen.dart';
+import 'features/onboarding/onboarding_screen.dart';
 import 'features/user/user_shell.dart';
 import 'providers/auth_provider.dart';
 import 'providers/history_provider.dart';
@@ -17,19 +20,27 @@ import 'providers/stats_provider.dart';
 import 'providers/user_provider.dart';
 
 class GiaiDieuApp extends StatelessWidget {
-  const GiaiDieuApp({super.key, this.prefs});
+  const GiaiDieuApp({super.key, this.prefs, this.cache});
 
   final PrefsStore? prefs;
+  final LocalCacheStore? cache;
 
   @override
   Widget build(BuildContext context) {
-    final cache = prefs == null ? null : AppDatabase(prefs!);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => SettingsProvider(store: prefs)),
         ChangeNotifierProvider(create: (_) => AuthProvider()..initialize()),
-        ChangeNotifierProvider(create: (_) => SongProvider(cache: cache)),
-        ChangeNotifierProvider(create: (_) => PlaylistProvider(cache: cache)),
+        ChangeNotifierProvider(
+          create: (_) => SongProvider(
+            repository: SongRepository(cache: cache),
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => PlaylistProvider(
+            repository: PlaylistRepository(cache: cache),
+          ),
+        ),
         ChangeNotifierProvider(create: (_) => HistoryProvider()),
         ChangeNotifierProvider(create: (_) => StatsProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
@@ -60,13 +71,22 @@ class _AuthGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(
-      builder: (context, auth, _) {
+    return Consumer2<AuthProvider, SettingsProvider>(
+      builder: (context, auth, settings, _) {
         if (auth.isInitializing) {
           return const Scaffold(body: Center(child: CircularProgressIndicator()));
         }
         final user = auth.user;
-        if (user == null) return const LoginScreen();
+        if (user == null) {
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 650),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            child: settings.hasSeenOnboarding
+                ? const LoginScreen(key: ValueKey('login'))
+                : const OnboardingScreen(key: ValueKey('onboarding')),
+          );
+        }
 
         return user.isAdmin
             ? AdminShell(key: ValueKey('admin-${user.id}'))

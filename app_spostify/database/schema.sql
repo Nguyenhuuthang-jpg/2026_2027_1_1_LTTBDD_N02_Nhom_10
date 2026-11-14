@@ -23,14 +23,11 @@ create table if not exists public.songs (
   duration_seconds int         not null check (duration_seconds > 0),
   cover_url        text,
   audio_url        text,
-  lyrics           text,
   play_count       bigint      not null default 0,
   is_visible       boolean     not null default true,
   created_by       uuid        references public.profiles (id) on delete set null,
   created_at       timestamptz not null default now()
 );
-
-alter table public.songs add column if not exists lyrics text;
 create index if not exists songs_genre_idx on public.songs (genre_id);
 create index if not exists songs_title_idx  on public.songs (lower(title));
 create index if not exists songs_artist_idx on public.songs (lower(artist));

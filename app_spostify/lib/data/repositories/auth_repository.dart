@@ -1,3 +1,5 @@
+import 'package:supabase_flutter/supabase_flutter.dart' show AuthState;
+
 import '../../models/app_user.dart';
 import '../remote/auth_remote.dart';
 
@@ -5,6 +7,8 @@ class AuthRepository {
   AuthRepository({AuthRemote? remote}) : _remote = remote ?? AuthRemote();
 
   final AuthRemote _remote;
+
+  Stream<AuthState> get authStateChanges => _remote.authStateChanges;
 
   Future<AppUser?> restoreSession() => _remote.getCurrentProfile();
 

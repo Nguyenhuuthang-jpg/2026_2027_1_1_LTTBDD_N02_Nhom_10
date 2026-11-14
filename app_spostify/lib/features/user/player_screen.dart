@@ -201,6 +201,8 @@ class _SongDetailTabsState extends State<_SongDetailTabs> {
   Widget build(BuildContext context) {
     final song = widget.song;
     final lyrics = song.lyrics?.trim() ?? '';
+    final syncedLines = parseLrc(lyrics);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -219,9 +221,17 @@ class _SongDetailTabsState extends State<_SongDetailTabs> {
           _InfoRow(context.tr('infoGenre'), song.genreName ?? '—'),
           _InfoRow(context.tr('infoDuration'), song.durationLabel),
           _InfoRow(context.tr('infoPlays'), '${song.playCount}'),
-        ] else
+        ] else if (lyrics.isEmpty)
           Text(
-            lyrics.isEmpty ? context.tr('noLyrics') : lyrics,
+            context.tr('noLyrics'),
+            textAlign: TextAlign.center,
+            style: const TextStyle(height: 1.7, fontSize: 15),
+          )
+        else if (syncedLines.length >= 2)
+          _SyncedLyrics(lines: syncedLines)
+        else
+          Text(
+            lyrics,
             textAlign: TextAlign.center,
             style: const TextStyle(height: 1.7, fontSize: 15),
           ),
@@ -249,6 +259,126 @@ class _InfoRow extends StatelessWidget {
           ),
           Flexible(child: Text(value, textAlign: TextAlign.end)),
         ],
+      ),
+    );
+  }
+}
+
+class LrcLine {
+  const LrcLine(this.time, this.text);
+  final Duration time;
+  final String text;
+}
+
+List<LrcLine> parseLrc(String raw) {
+  final reg = RegExp(r'\[(\d{1,2}):(\d{2})(?:[.:](\d{1,3}))?\]');
+  final lines = <LrcLine>[];
+  for (final row in raw.split('\n')) {
+    final matches = reg.allMatches(row).toList();
+    if (matches.isEmpty) continue;
+    final text = row.substring(matches.last.end).trim();
+    for (final m in matches) {
+      final frac = (m.group(3) ?? '0').padRight(3, '0').substring(0, 3);
+      lines.add(
+        LrcLine(
+          Duration(
+            minutes: int.parse(m.group(1)!),
+            seconds: int.parse(m.group(2)!),
+            milliseconds: int.parse(frac),
+          ),
+          text,
+        ),
+      );
+    }
+  }
+  lines.sort((a, b) => a.time.compareTo(b.time));
+  return lines;
+}
+
+class _SyncedLyrics extends StatefulWidget {
+  const _SyncedLyrics({required this.lines});
+
+  final List<LrcLine> lines;
+
+  @override
+  State<_SyncedLyrics> createState() => _SyncedLyricsState();
+}
+
+class _SyncedLyricsState extends State<_SyncedLyrics> {
+  static const double _itemHeight = 48;
+  static const double _viewHeight = 320;
+
+  final _controller = ScrollController();
+  int _current = -1;
+
+  int _indexFor(Duration pos) {
+    var idx = -1;
+    for (var i = 0; i < widget.lines.length; i++) {
+      if (widget.lines[i].time <= pos) {
+        idx = i;
+      } else {
+        break;
+      }
+    }
+    return idx;
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final position = context.select<PlayerProvider, Duration>(
+      (p) => p.position,
+    );
+    final idx = _indexFor(position);
+
+    if (idx != _current) {
+      _current = idx;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!_controller.hasClients || idx < 0) return;
+        final target = (idx * _itemHeight - _viewHeight / 2 + _itemHeight / 2)
+            .clamp(0.0, _controller.position.maxScrollExtent);
+        _controller.animateTo(
+          target,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    }
+
+    return SizedBox(
+      height: _viewHeight,
+      child: ListView.builder(
+        controller: _controller,
+        itemExtent: _itemHeight,
+        itemCount: widget.lines.length,
+        itemBuilder: (context, i) {
+          final active = i == idx;
+          return GestureDetector(
+            onTap: () =>
+                context.read<PlayerProvider>().seek(widget.lines[i].time),
+            child: Center(
+              child: AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 200),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: active ? 18 : 15,
+                  fontWeight: active ? FontWeight.w800 : FontWeight.w400,
+                  color: active ? AppTheme.primaryGreen : Colors.white60,
+                ),
+                child: Text(
+                  widget.lines[i].text,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

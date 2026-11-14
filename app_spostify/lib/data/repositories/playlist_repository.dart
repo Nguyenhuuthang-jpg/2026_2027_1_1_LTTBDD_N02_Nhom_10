@@ -1,15 +1,15 @@
+import '../../core/utils/validators.dart';
 import '../../models/playlist.dart';
 import '../../models/song.dart';
+import '../local/local_cache_store.dart';
 import '../remote/supabase_client.dart';
 
 class PlaylistRepository {
-  static const String _selectWithCount = '*, playlist_songs(count)';
+  PlaylistRepository({LocalCacheStore? cache}) : _cache = cache;
 
-  static String? validateName(String name) {
-    final n = name.trim();
-    if (n.isEmpty || n.length > 60) return 'Tên playlist phải có từ 1 đến 60 ký tự.';
-    return null;
-  }
+  final LocalCacheStore? _cache;
+
+  static const String _selectWithCount = '*, playlist_songs(count)';
 
   Future<List<Playlist>> fetchPlaylists({bool includeHidden = false}) async {
     var query = AppSupabase.client.from('playlists').select(_selectWithCount);
@@ -18,13 +18,31 @@ class PlaylistRepository {
     return rows.map((r) => Playlist.fromJson(Map<String, dynamic>.from(r))).toList();
   }
 
+  Future<({List<Playlist> items, bool isFromCache})> loadPlaylistsWithFallback({
+    bool includeHidden = false,
+  }) async {
+    try {
+      final playlists = await fetchPlaylists(includeHidden: includeHidden);
+      if (!includeHidden) await _cache?.cachePlaylists(playlists);
+      return (items: playlists, isFromCache: false);
+    } catch (_) {
+      final cached = !includeHidden
+          ? (_cache?.cachedPlaylists() ?? const <Playlist>[])
+          : const <Playlist>[];
+      if (cached.isNotEmpty) {
+        return (items: cached, isFromCache: true);
+      }
+      rethrow;
+    }
+  }
+
   Future<Playlist> createPlaylist({
     required String name,
     String? description,
     String? coverUrl,
     bool isVisible = true,
   }) async {
-    final error = validateName(name);
+    final error = Validators.validatePlaylistName(name);
     if (error != null) throw ArgumentError(error);
     final row = await AppSupabase.client
         .from('playlists')
@@ -40,7 +58,7 @@ class PlaylistRepository {
   }
 
   Future<Playlist> updatePlaylist(Playlist playlist) async {
-    final error = validateName(playlist.name);
+    final error = Validators.validatePlaylistName(playlist.name);
     if (error != null) throw ArgumentError(error);
     final row = await AppSupabase.client
         .from('playlists')

@@ -1,3 +1,4 @@
+import 'package:app_spostify/core/utils/validators.dart';
 import 'package:app_spostify/data/repositories/song_repository.dart';
 import 'package:app_spostify/models/genre.dart';
 import 'package:app_spostify/models/song.dart';
@@ -30,7 +31,7 @@ class FakeSongRepository extends SongRepository {
   @override
   Future<Song> createSong(Song song) async {
     _maybeFail();
-    final error = SongRepository.validateSongInput(
+    final error = Validators.validateSongInput(
       title: song.title,
       artist: song.artist,
       durationSeconds: song.durationSeconds,

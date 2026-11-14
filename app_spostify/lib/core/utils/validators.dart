@@ -28,4 +28,25 @@ class Validators {
     if (name.length > 60) return 'Họ tên không được vượt quá 60 ký tự.';
     return null;
   }
+
+  static String? validateSongInput({
+    required String title,
+    required String artist,
+    required int durationSeconds,
+  }) {
+    if (title.trim().isEmpty) return 'Tên bài hát không được để trống.';
+    if (title.trim().length > 60) return 'Tên bài hát tối đa 60 ký tự.';
+    if (artist.trim().isEmpty) return 'Tên nghệ sĩ không được để trống.';
+    if (artist.trim().length > 40) return 'Tên nghệ sĩ tối đa 40 ký tự.';
+    if (durationSeconds <= 0) return 'Thời lượng phải lớn hơn 0.';
+    return null;
+  }
+
+  static String? validatePlaylistName(String name) {
+    final n = name.trim();
+    if (n.isEmpty || n.length > 60) {
+      return 'Tên playlist phải có từ 1 đến 60 ký tự.';
+    }
+    return null;
+  }
 }

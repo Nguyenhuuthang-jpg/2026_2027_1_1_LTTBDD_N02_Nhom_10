@@ -1,23 +1,22 @@
 import 'package:flutter/foundation.dart';
 
-import '../data/local/app_database.dart';
 import '../data/repositories/playlist_repository.dart';
 import '../models/playlist.dart';
 import '../models/song.dart';
 
 class PlaylistProvider extends ChangeNotifier {
-  PlaylistProvider({PlaylistRepository? repository, AppDatabase? cache})
-      : _repository = repository ?? PlaylistRepository(),
-        _db = cache;
+  PlaylistProvider({PlaylistRepository? repository})
+      : _repository = repository ?? PlaylistRepository();
 
   final PlaylistRepository _repository;
-  final AppDatabase? _db;
   List<Playlist> _playlists = [];
   bool _isLoading = false;
+  bool _fromCache = false;
   String? _errorMessage;
 
   List<Playlist> get playlists => List.unmodifiable(_playlists);
   bool get isLoading => _isLoading;
+  bool get isFromCache => _fromCache;
   String? get errorMessage => _errorMessage;
 
   Future<void> loadPlaylists({bool includeHidden = false}) async {
@@ -25,13 +24,13 @@ class PlaylistProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
     try {
-      _playlists = await _repository.fetchPlaylists(includeHidden: includeHidden);
-      if (!includeHidden) await _db?.cachePlaylists(_playlists);
+      final result = await _repository.loadPlaylistsWithFallback(
+        includeHidden: includeHidden,
+      );
+      _playlists = result.items;
+      _fromCache = result.isFromCache;
     } catch (error) {
       _errorMessage = error.toString();
-      if (_playlists.isEmpty && !includeHidden) {
-        _playlists = _db?.cachedPlaylists() ?? const [];
-      }
     } finally {
       _isLoading = false;
       notifyListeners();

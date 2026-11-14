@@ -24,14 +24,6 @@ class DeveloperScreen extends StatelessWidget {
     ),
   ];
 
-  static const List<String> _stack = [
-    'Flutter',
-    'Provider',
-    'Supabase',
-    'just_audio',
-    'shared_preferences',
-  ];
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -91,18 +83,6 @@ class DeveloperScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
           ],
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [for (final s in _stack) Chip(label: Text(s))],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            context.tr('mem'),
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall,
-          ),
         ],
       ),
     );

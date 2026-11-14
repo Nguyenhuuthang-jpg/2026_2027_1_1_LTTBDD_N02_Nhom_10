@@ -4,20 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart'
     show AuthException, PostgrestException;
 
-import '../data/remote/auth_remote.dart';
 import '../data/repositories/auth_repository.dart';
 import '../models/app_user.dart';
 
 class AuthProvider extends ChangeNotifier {
-  AuthProvider({AuthRepository? repository, AuthRemote? remote})
-      : this._(repository, remote ?? AuthRemote());
-
-  AuthProvider._(AuthRepository? repository, AuthRemote remote)
-      : _remote = remote,
-        _repository = repository ?? AuthRepository(remote: remote);
+  AuthProvider({AuthRepository? repository})
+      : _repository = repository ?? AuthRepository();
 
   final AuthRepository _repository;
-  final AuthRemote _remote;
   StreamSubscription? _authSubscription;
 
   AppUser? _user;
@@ -35,7 +29,7 @@ class AuthProvider extends ChangeNotifier {
   String? get infoMessage => _infoMessage;
 
   Future<void> initialize() async {
-    _authSubscription ??= _remote.authStateChanges.listen((state) async {
+    _authSubscription ??= _repository.authStateChanges.listen((state) async {
       if (state.session == null) {
         _user = null;
       } else {

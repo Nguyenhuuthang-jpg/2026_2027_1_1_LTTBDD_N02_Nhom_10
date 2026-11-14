@@ -180,16 +180,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 20),
-                                Text(
-                                  context.tr('quickTry'),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white.withValues(alpha: .42),
-                                    fontSize: 11.5,
-                                    height: 1.5,
-                                  ),
-                                ),
                               ],
                             ),
                           ),
@@ -312,30 +302,68 @@ class _LanguageToggle extends StatelessWidget {
   Widget build(BuildContext context) {
     final isVi = context.watch<SettingsProvider>().isVietnamese;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        TextButton(
-          onPressed: () => context.read<SettingsProvider>().setLanguage('vi'),
-          child: Text(
-            'Tiếng Việt',
-            style: TextStyle(
-              color: isVi
-                  ? AppTheme.primaryGreen
-                  : Colors.white.withValues(alpha: .55),
-              fontWeight: isVi ? FontWeight.w700 : FontWeight.w400,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextButton(
+              onPressed: () => context.read<SettingsProvider>().setLanguage('vi'),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                'Tiếng Việt',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: isVi
+                      ? AppTheme.primaryGreen
+                      : Colors.white.withValues(alpha: .55),
+                  fontWeight: isVi ? FontWeight.w700 : FontWeight.w400,
+                ),
+              ),
             ),
-          ),
+            Text(' • ', style: TextStyle(color: Colors.white.withValues(alpha: .35))),
+            TextButton(
+              onPressed: () => context.read<SettingsProvider>().setLanguage('en'),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                'English',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: !isVi
+                      ? AppTheme.primaryGreen
+                      : Colors.white.withValues(alpha: .55),
+                  fontWeight: !isVi ? FontWeight.w700 : FontWeight.w400,
+                ),
+              ),
+            ),
+          ],
         ),
-        Text('•', style: TextStyle(color: Colors.white.withValues(alpha: .35))),
-        TextButton(
-          onPressed: () => context.read<SettingsProvider>().setLanguage('en'),
+        OutlinedButton(
+          onPressed: () => context.read<SettingsProvider>().resetOnboarding(),
+          style: OutlinedButton.styleFrom(
+            backgroundColor: AppTheme.primaryGreen.withValues(alpha: 0.10),
+            foregroundColor: AppTheme.primaryGreen,
+            side: BorderSide(
+              color: AppTheme.primaryGreen.withValues(alpha: 0.28),
+            ),
+            shape: const StadiumBorder(),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
           child: Text(
-            'English',
-            style: TextStyle(
-              color: !isVi
-                  ? AppTheme.primaryGreen
-                  : Colors.white.withValues(alpha: .55),
-              fontWeight: !isVi ? FontWeight.w700 : FontWeight.w400,
+            isVi ? 'Xem lại Onboarding' : 'Replay Onboarding',
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),

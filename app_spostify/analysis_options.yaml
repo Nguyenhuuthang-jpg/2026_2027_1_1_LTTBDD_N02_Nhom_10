@@ -13,3 +13,4 @@ analyzer:
 
 linter:
   rules:
+    prefer_initializing_formals: false

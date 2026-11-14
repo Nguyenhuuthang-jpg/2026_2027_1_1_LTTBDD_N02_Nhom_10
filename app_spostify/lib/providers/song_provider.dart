@@ -1,17 +1,14 @@
 import 'package:flutter/foundation.dart';
 
-import '../data/local/app_database.dart';
 import '../data/repositories/song_repository.dart';
 import '../models/genre.dart';
 import '../models/song.dart';
 
 class SongProvider extends ChangeNotifier {
-  SongProvider({SongRepository? repository, AppDatabase? cache})
-      : _repository = repository ?? SongRepository(),
-        _db = cache;
+  SongProvider({SongRepository? repository})
+      : _repository = repository ?? SongRepository();
 
   final SongRepository _repository;
-  final AppDatabase? _db;
   List<Song> _songs = [];
   List<Genre> _genres = [];
   bool _isLoading = false;
@@ -41,17 +38,14 @@ class SongProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
     try {
-      _songs = await _repository.fetchSongs(search: search, genreId: genreId);
-      _fromCache = false;
-      final isUnfiltered = (search ?? '').trim().isEmpty && genreId == null;
-      if (isUnfiltered) await _db?.cacheSongs(_songs);
+      final result = await _repository.loadSongsWithFallback(
+        search: search,
+        genreId: genreId,
+      );
+      _songs = result.items;
+      _fromCache = result.isFromCache;
     } catch (error) {
       _errorMessage = error.toString();
-      final cached = _db?.cachedSongs() ?? const [];
-      if (cached.isNotEmpty && _songs.isEmpty) {
-        _songs = cached;
-        _fromCache = true;
-      }
     } finally {
       _isLoading = false;
       notifyListeners();
