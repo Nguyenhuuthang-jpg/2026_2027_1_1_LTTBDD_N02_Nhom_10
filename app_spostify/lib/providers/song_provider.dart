@@ -29,7 +29,6 @@ class SongProvider extends ChangeNotifier {
   String get search => _search;
   int? get genreId => _genreId;
 
-  /// Bài nghe nhiều nhất (đã sắp theo play_count).
   List<Song> get topSongs {
     final list = visibleSongs..sort((a, b) => b.playCount.compareTo(a.playCount));
     return list.take(5).toList();

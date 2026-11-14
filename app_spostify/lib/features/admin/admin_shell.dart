@@ -15,7 +15,6 @@ import 'song_form_sheet.dart';
 import 'song_manager_screen.dart';
 import 'user_manager_screen.dart';
 
-/// Khung quản trị: 4 tab + nút thêm nổi (bài hát / playlist) + nút Cài đặt.
 class AdminShell extends StatefulWidget {
   const AdminShell({super.key});
 

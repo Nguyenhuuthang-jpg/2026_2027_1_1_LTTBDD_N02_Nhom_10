@@ -147,7 +147,6 @@ class _PlaylistCard extends StatelessWidget {
   }
 }
 
-/// Thẻ nổi bật cho bài đang được nghe nhiều nhất.
 class _HotBanner extends StatelessWidget {
   const _HotBanner({required this.song, required this.queue});
 

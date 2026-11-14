@@ -6,7 +6,6 @@ import '../features/user/player_screen.dart';
 import '../providers/player_provider.dart';
 import 'cover_art.dart';
 
-/// Thanh phát nhạc thu gọn phía trên thanh điều hướng. Ẩn khi chưa phát bài nào.
 class MiniPlayer extends StatelessWidget {
   const MiniPlayer({super.key});
 

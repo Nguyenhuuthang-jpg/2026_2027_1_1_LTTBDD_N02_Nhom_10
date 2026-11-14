@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../core/l10n/app_strings.dart';
 import '../../core/theme/app_theme.dart';
 
-/// Thông tin nhóm phát triển. Sửa danh sách [_members] để điền tên và MSSV.
 class DeveloperScreen extends StatelessWidget {
   const DeveloperScreen({super.key});
 

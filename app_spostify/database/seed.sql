@@ -1,10 +1,7 @@
-
--- Thể loại ( có thể thêm )
 insert into public.genres (name) values
   ('Pop'), ('Indie'), ('Acoustic'), ('Hip-hop'), ('Chill')
 on conflict (name) do nothing;
 
--- Bài hát. Nhạc phát từ link công khai trên Supabase Storage (bucket songs, xem storage.sql).
 insert into public.songs (title, artist, genre_id, duration_seconds, play_count, is_visible, audio_url) values
   ('Có Mình Và Ta',      'Nguyễn Vĩ',          (select id from public.genres where name = 'Pop'),      258, 12840, true, 'https://htzmhtjhgefdkmjsugky.supabase.co/storage/v1/object/public/songs/co_minh_va_ta.mp3'),
   ('Một Đêm Say',        'Thịnh Suy',          (select id from public.genres where name = 'Chill'),    234, 11230, true, 'https://htzmhtjhgefdkmjsugky.supabase.co/storage/v1/object/public/songs/mot_dem_say.mp3'),
@@ -24,7 +21,6 @@ insert into public.songs (title, artist, genre_id, duration_seconds, play_count,
   ('Như Một Người Rưng', 'OSAD, Hà An Huy', (select id from public.genres where name = 'Pop'), 177, 0, true, 'https://htzmhtjhgefdkmjsugky.supabase.co/storage/v1/object/public/songs/nhu_mot_nguoi_rung.mp3'),
   ('Gió Thổi Tuyết Rơi', 'Lục Tiểu Lạc', (select id from public.genres where name = 'Pop'), 200, 0, true, 'https://htzmhtjhgefdkmjsugky.supabase.co/storage/v1/object/public/songs/gio_thoi_tuyet_roi.mp3');
 
--- Playlist
 insert into public.playlists (name, description, is_visible) values
   ('Chill buổi tối',     'Nhạc nhẹ cho buổi tối',            true),
   ('Tập trung học bài',  'Giai điệu giúp bạn tập trung',     true),
@@ -32,7 +28,6 @@ insert into public.playlists (name, description, is_visible) values
   ('Nhạc Việt mới',      'Các bản phát hành mới',            false),
   ('Top thịnh hành',     'Những bản nhạc nổi bật',           false);
 
--- Gán bài hát vào playlist
 insert into public.playlist_songs (playlist_id, song_id, position)
 select p.id, s.id, row_number() over (partition by p.id order by s.id) - 1
 from public.playlists p
@@ -43,21 +38,3 @@ join public.songs s on
   or (p.name = 'Nhạc Việt mới'     and s.title in ('Có Mình Và Ta', 'Thích Em Tâm Huyết'))
   or (p.name = 'Top thịnh hành'    and s.title in ('Có Mình Và Ta', 'Một Đêm Say', 'Thích Em Tâm Huyết'))
 on conflict do nothing;
-
--- ---------------------------------------------------------------------
--- Tài khoản admin
--- Không thể tạo mật khẩu bằng SQL thuần, nên làm 2 bước:
---   1) Supabase → Authentication → Users → Add user
---      (email: admin@giaidieu.vn, mật khẩu tùy bạn, tick "Auto Confirm User").
---      Trigger handle_new_user sẽ tự tạo dòng trong public.profiles.
---   2) Chạy lệnh sau để nâng quyền:
---
---   alter table public.profiles disable trigger protect_profile_columns;
---   update public.profiles set role = 'admin', display_name = 'Minh Anh'
---   where email = 'admin@giaidieu.vn';
---   alter table public.profiles enable trigger protect_profile_columns;
---
--- Cách nhanh hơn: chạy database/sample_accounts.sql (tạo sẵn admin + user mẫu).
---
--- Tài khoản người dùng thường chỉ cần đăng ký bằng màn Đăng ký trong app.
--- ---------------------------------------------------------------------

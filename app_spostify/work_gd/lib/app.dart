@@ -51,7 +51,6 @@ class _AuthGate extends StatelessWidget {
   }
 }
 
-/// Điểm rẽ nhánh đầu tiên. Các màn dashboard đầy đủ thuộc phần việc UI riêng.
 class _RoleLandingScreen extends StatelessWidget {
   const _RoleLandingScreen({required this.user});
 
@@ -97,7 +96,6 @@ class _RoleLandingScreen extends StatelessWidget {
   }
 }
 
-/// Màn hình hướng dẫn khi chưa cấu hình khóa kết nối Supabase.
 class SupabaseSetupRequiredApp extends StatelessWidget {
   const SupabaseSetupRequiredApp({super.key});
 

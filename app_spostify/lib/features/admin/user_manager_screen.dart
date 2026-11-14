@@ -9,7 +9,6 @@ import '../../providers/user_provider.dart';
 import '../../widgets/confirm_dialog.dart';
 import '../../widgets/state_views.dart';
 
-/// Quản lý người dùng: tìm kiếm, khóa / mở khóa tài khoản.
 class UserManagerScreen extends StatefulWidget {
   const UserManagerScreen({super.key});
 

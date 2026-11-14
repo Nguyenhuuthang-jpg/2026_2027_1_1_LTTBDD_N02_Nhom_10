@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import '../data/remote/supabase_client.dart';
 import '../models/playlist.dart';
 
-/// Quản lý danh sách playlist. Phân quyền ghi được kiểm soát bằng RLS ở database.
 class PlaylistProvider extends ChangeNotifier {
   List<Playlist> _playlists = [];
   bool _isLoading = false;

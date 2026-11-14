@@ -25,7 +25,6 @@ Future<void> main() async {
     return;
   }
 
-  // Cài đặt (ngôn ngữ, sáng/tối) + cache. Lỗi ở đây không được chặn app chạy.
   PrefsStore? prefs;
   try {
     prefs = await PrefsStore.create();

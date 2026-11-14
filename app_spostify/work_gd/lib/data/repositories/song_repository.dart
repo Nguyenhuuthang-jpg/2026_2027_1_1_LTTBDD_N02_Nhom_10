@@ -1,13 +1,11 @@
 import '../../models/song.dart';
 import '../remote/supabase_client.dart';
 
-/// Truy vấn và cập nhật bảng songs. Quyền admin/user được RLS của Supabase bảo vệ.
 class SongRepository {
   SongRepository();
 
   static const String _selectWithGenre = '*, genres(name)';
 
-  /// Trả về thông báo lỗi dữ liệu; null nghĩa là dữ liệu hợp lệ.
   static String? validateSongInput({
     required String title,
     required String artist,

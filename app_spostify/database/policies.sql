@@ -19,7 +19,6 @@ alter table public.playlist_songs    enable row level security;
 alter table public.favorites         enable row level security;
 alter table public.listening_history enable row level security;
 
--- ---------- profiles --------------------------------------------------
 drop policy if exists "profiles: đọc hồ sơ của mình hoặc admin đọc tất cả" on public.profiles;
 create policy "profiles: đọc hồ sơ của mình hoặc admin đọc tất cả"
   on public.profiles for select to authenticated
@@ -31,8 +30,6 @@ create policy "profiles: sửa hồ sơ của mình hoặc admin sửa tất c�
   using (id = auth.uid() or public.is_admin())
   with check (id = auth.uid() or public.is_admin());
 
--- Người dùng thường chỉ được đổi tên hiển thị / ảnh đại diện,
--- không được tự nâng quyền hay tự mở khóa.
 create or replace function public.protect_profile_columns()
 returns trigger
 language plpgsql
@@ -57,9 +54,6 @@ create trigger protect_profile_columns
   before update on public.profiles
   for each row execute function public.protect_profile_columns();
 
--- Không có policy insert/delete: profile do trigger tạo, xóa theo auth.users.
-
--- ---------- genres ----------------------------------------------------
 drop policy if exists "genres: ai đăng nhập cũng đọc được" on public.genres;
 create policy "genres: ai đăng nhập cũng đọc được"
   on public.genres for select to authenticated using (true);
@@ -69,7 +63,6 @@ create policy "genres: admin quản lý"
   on public.genres for all to authenticated
   using (public.is_admin()) with check (public.is_admin());
 
--- ---------- songs -----------------------------------------------------
 drop policy if exists "songs: người dùng chỉ thấy bài đang hiển thị, admin thấy tất cả" on public.songs;
 create policy "songs: người dùng chỉ thấy bài đang hiển thị, admin thấy tất cả"
   on public.songs for select to authenticated
@@ -88,7 +81,6 @@ drop policy if exists "songs: admin xóa" on public.songs;
 create policy "songs: admin xóa"
   on public.songs for delete to authenticated using (public.is_admin());
 
--- ---------- playlists + playlist_songs --------------------------------
 drop policy if exists "playlists: người dùng chỉ thấy playlist đang hiển thị" on public.playlists;
 create policy "playlists: người dùng chỉ thấy playlist đang hiển thị"
   on public.playlists for select to authenticated
@@ -112,14 +104,11 @@ create policy "playlist_songs: admin quản lý"
   on public.playlist_songs for all to authenticated
   using (public.is_admin()) with check (public.is_admin());
 
--- ---------- favorites (thư viện) --------------------------------------
 drop policy if exists "favorites: chỉ chủ sở hữu" on public.favorites;
 create policy "favorites: chỉ chủ sở hữu"
   on public.favorites for all to authenticated
   using (user_id = auth.uid()) with check (user_id = auth.uid());
 
--- ---------- listening_history -----------------------------------------
--- Ghi lịch sử đi qua hàm record_play() (security definer) nên không mở insert trực tiếp.
 drop policy if exists "history: đọc lịch sử của mình, admin đọc tất cả" on public.listening_history;
 create policy "history: đọc lịch sử của mình, admin đọc tất cả"
   on public.listening_history for select to authenticated
@@ -130,7 +119,6 @@ create policy "history: xóa lịch sử của mình"
   on public.listening_history for delete to authenticated
   using (user_id = auth.uid());
 
--- ---------- quyền thực thi hàm ----------------------------------------
 revoke execute on function public.record_play(bigint)  from public, anon;
 grant  execute on function public.record_play(bigint)  to authenticated;
 revoke execute on function public.admin_daily_plays()  from public, anon;

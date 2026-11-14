@@ -1,7 +1,3 @@
-/// Một dòng của bảng `songs` (kèm tên thể loại nếu query có join `genres(name)`).
-///
-/// Ví dụ query:
-///   supabase.from('songs').select('*, genres(name)')
 class Song {
   final int id;
   final String title;
@@ -31,14 +27,12 @@ class Song {
     this.createdAt,
   });
 
-  /// "3:45"
   String get durationLabel {
     final m = durationSeconds ~/ 60;
     final s = (durationSeconds % 60).toString().padLeft(2, '0');
     return '$m:$s';
   }
 
-  /// Chuyển "3:45" (ô nhập của admin) thành số giây. Trả về null nếu sai định dạng.
   static int? parseDuration(String input) {
     final match = RegExp(r'^(\d{1,2}):([0-5]\d)$').firstMatch(input.trim());
     if (match == null) return null;
@@ -68,7 +62,6 @@ class Song {
     );
   }
 
-  /// Dùng cho insert / update. Không gồm id, play_count, created_at (do DB quản lý).
   Map<String, dynamic> toJson() => {
     'title': title,
     'artist': artist,

@@ -10,7 +10,6 @@ import '../providers/player_provider.dart';
 import '../providers/settings_provider.dart';
 import 'confirm_dialog.dart';
 
-/// Các mục cài đặt dùng chung cho người dùng và admin.
 class SettingsSections extends StatelessWidget {
   const SettingsSections({super.key});
 
@@ -86,7 +85,6 @@ class _Header extends StatelessWidget {
       );
 }
 
-/// Hỏi xác nhận, dừng nhạc, xóa dữ liệu người dùng rồi đăng xuất.
 Future<void> confirmAndSignOut(BuildContext context) async {
   final ok = await showConfirmDialog(
     context,
@@ -98,7 +96,7 @@ Future<void> confirmAndSignOut(BuildContext context) async {
   final player = context.read<PlayerProvider>();
   final history = context.read<HistoryProvider>();
   final auth = context.read<AuthProvider>();
-  // Quay về màn gốc trước để AuthGate hiển thị màn đăng nhập.
+
   Navigator.of(context).popUntil((route) => route.isFirst);
   await player.stop();
   history.reset();

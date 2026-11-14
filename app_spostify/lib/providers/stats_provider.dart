@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 
 import '../data/repositories/stats_repository.dart';
 
-/// Số liệu màn Tổng quan (admin).
 class StatsProvider extends ChangeNotifier {
   StatsProvider({StatsRepository? repository})
       : _repository = repository ?? StatsRepository();

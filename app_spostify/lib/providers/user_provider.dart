@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import '../data/repositories/user_repository.dart';
 import '../models/app_user.dart';
 
-/// Danh sách người dùng cho admin + cập nhật hồ sơ cá nhân.
 class UserProvider extends ChangeNotifier {
   UserProvider({UserRepository? repository})
       : _repository = repository ?? UserRepository();
@@ -46,7 +45,6 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  /// Trả về hồ sơ mới, hoặc null nếu lỗi.
   Future<AppUser?> updateProfile(AppUser user) async {
     try {
       final updated = await _repository.updateProfile(user);

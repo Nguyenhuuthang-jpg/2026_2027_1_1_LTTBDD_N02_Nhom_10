@@ -19,7 +19,6 @@ import 'providers/user_provider.dart';
 class GiaiDieuApp extends StatelessWidget {
   const GiaiDieuApp({super.key, this.prefs});
 
-  /// Có thể null (ví dụ trong test) – khi đó cài đặt không được lưu lại.
   final PrefsStore? prefs;
 
   @override
@@ -37,7 +36,7 @@ class GiaiDieuApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) {
             final history = context.read<HistoryProvider>();
-            // Mỗi lần bắt đầu phát một bài -> ghi lịch sử + tăng lượt nghe.
+
             return PlayerProvider()..onSongStarted = history.recordPlay;
           },
         ),
@@ -56,7 +55,6 @@ class GiaiDieuApp extends StatelessWidget {
   }
 }
 
-/// Chưa đăng nhập -> LoginScreen; admin -> AdminShell; người dùng -> UserShell.
 class _AuthGate extends StatelessWidget {
   const _AuthGate();
 
@@ -69,7 +67,7 @@ class _AuthGate extends StatelessWidget {
         }
         final user = auth.user;
         if (user == null) return const LoginScreen();
-        // Key theo id để khi đổi tài khoản, toàn bộ trạng thái shell được tạo lại.
+
         return user.isAdmin
             ? AdminShell(key: ValueKey('admin-${user.id}'))
             : UserShell(key: ValueKey('user-${user.id}'));
@@ -78,11 +76,9 @@ class _AuthGate extends StatelessWidget {
   }
 }
 
-/// Màn hình hướng dẫn khi chưa cấu hình khóa kết nối Supabase.
 class SupabaseSetupRequiredApp extends StatelessWidget {
   const SupabaseSetupRequiredApp({super.key, this.error});
 
-  /// Lỗi khởi tạo (nếu có) để dễ chẩn đoán.
   final Object? error;
 
   @override

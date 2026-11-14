@@ -1,9 +1,7 @@
-/// Chuỗi giao diện tiếng Việt.
 class Vi {
   Vi._();
 
   static const Map<String, String> strings = {
-    // Chung / xác thực
     'appName': 'Giai Điệu',
     'login': 'Đăng nhập',
     'register': 'Đăng ký',
@@ -41,7 +39,6 @@ class Vi {
     'offline': 'Không kết nối được máy chủ – đang hiển thị dữ liệu đã lưu.',
     'logoutQ': 'Bạn có chắc muốn đăng xuất?',
 
-    // Điều hướng
     'n_home': 'Trang chủ',
     'n_explore': 'Khám phá',
     'n_library': 'Thư viện',
@@ -52,7 +49,6 @@ class Vi {
     'n_users': 'Người dùng',
     'n_set': 'Cài đặt',
 
-    // Người dùng
     'goodMorning': 'Chào buổi sáng',
     'goodAfternoon': 'Chào buổi chiều',
     'goodEvening': 'Chào buổi tối',
@@ -77,7 +73,6 @@ class Vi {
     'plays': 'lượt nghe',
     'noSongsInPl': 'Playlist này chưa có bài hát.',
 
-    // Cài đặt
     'lang': 'Ngôn ngữ',
     'appearance': 'Giao diện',
     'darkMode': 'Giao diện tối',
@@ -85,7 +80,6 @@ class Vi {
     'version': 'Phiên bản',
     'team': 'Nhóm 10 · Lớp N02 · Lập trình thiết bị di động',
 
-    // Quản trị
     'st_users': 'Người dùng',
     'st_plays': 'Lượt nghe hôm nay',
     'st_songs': 'Bài hát',

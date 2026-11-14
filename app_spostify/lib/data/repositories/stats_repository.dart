@@ -1,14 +1,12 @@
 import '../../models/song.dart';
 import '../remote/supabase_client.dart';
 
-/// Số liệu cho màn Tổng quan của admin.
 class DashboardStats {
   final int users;
   final int songs;
   final int playlists;
   final int playsToday;
 
-  /// 14 phần tử, phần tử cuối là hôm nay.
   final List<int> dailyPlays;
   final List<Song> topSongs;
 
@@ -53,7 +51,6 @@ class StatsRepository {
           .limit(5),
     ]);
 
-    // Ghép dữ liệu theo ngày vào đúng 14 ô (ngày không có lượt nghe = 0).
     final byDay = <String, int>{};
     for (final row in (results[4] as List)) {
       byDay[(row['day'] as String).substring(0, 10)] = (row['plays'] as num).toInt();

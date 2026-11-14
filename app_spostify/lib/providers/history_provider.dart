@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import '../data/repositories/history_repository.dart';
 import '../models/song.dart';
 
-/// Bài yêu thích và lịch sử nghe của người dùng hiện tại.
 class HistoryProvider extends ChangeNotifier {
   HistoryProvider({HistoryRepository? repository})
       : _repository = repository ?? HistoryRepository();
@@ -43,7 +42,6 @@ class HistoryProvider extends ChangeNotifier {
     }
   }
 
-  /// Cập nhật giao diện ngay, nếu lỗi thì hoàn tác.
   Future<bool> toggleFavorite(Song song) async {
     final wasFavorite = isFavorite(song.id);
     if (wasFavorite) {
@@ -68,7 +66,6 @@ class HistoryProvider extends ChangeNotifier {
     }
   }
 
-  /// Gọi khi bắt đầu phát một bài (PlayerProvider.onSongStarted).
   Future<void> recordPlay(Song song) async {
     try {
       await _repository.recordPlay(song.id);
@@ -78,7 +75,6 @@ class HistoryProvider extends ChangeNotifier {
       ];
       notifyListeners();
     } catch (error) {
-      // Không chặn việc phát nhạc nếu ghi lịch sử thất bại.
       debugPrint('recordPlay failed: $error');
     }
   }
@@ -94,7 +90,6 @@ class HistoryProvider extends ChangeNotifier {
     }
   }
 
-  /// Xóa dữ liệu khi đăng xuất.
   void reset() {
     _favorites = [];
     _favoriteIds = {};

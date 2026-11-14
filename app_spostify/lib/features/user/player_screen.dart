@@ -8,7 +8,6 @@ import '../../providers/history_provider.dart';
 import '../../providers/player_provider.dart';
 import '../../widgets/cover_art.dart';
 
-/// Màn phát nhạc toàn màn hình.
 class PlayerScreen extends StatelessWidget {
   const PlayerScreen({super.key});
 
@@ -34,7 +33,6 @@ class PlayerScreen extends StatelessWidget {
       (h) => h.isFavorite(song.id),
     );
 
-    // Nếu stream chưa báo thời lượng thì dùng thời lượng lưu trong database.
     final total = player.duration > Duration.zero
         ? player.duration
         : Duration(seconds: song.durationSeconds);
@@ -187,7 +185,6 @@ class PlayerScreen extends StatelessWidget {
   }
 }
 
-/// Hai tab "Thông tin" và "Lời bài hát" của bài đang phát (không lưu link riêng).
 class _SongDetailTabs extends StatefulWidget {
   const _SongDetailTabs({required this.song});
 

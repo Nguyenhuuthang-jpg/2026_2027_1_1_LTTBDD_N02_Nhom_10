@@ -11,7 +11,6 @@ import '../../widgets/genre_chip.dart';
 import '../../widgets/state_views.dart';
 import 'song_form_sheet.dart';
 
-/// Quản lý bài hát: tìm kiếm, lọc thể loại, sửa, ẩn/hiện, xóa.
 class SongManagerScreen extends StatefulWidget {
   const SongManagerScreen({super.key});
 

@@ -1,6 +1,5 @@
 import 'package:just_audio/just_audio.dart';
 
-/// Lớp bao just_audio; không chứa logic giao diện hay quản lý danh sách bài hát.
 class AudioService {
   AudioService({AudioPlayer? player}) : _player = player ?? AudioPlayer();
 

@@ -12,7 +12,6 @@ class AuthProvider extends ChangeNotifier {
   AuthProvider({AuthRepository? repository, AuthRemote? remote})
       : this._(repository, remote ?? AuthRemote());
 
-  // Dùng chung MỘT AuthRemote cho cả provider và repository.
   AuthProvider._(AuthRepository? repository, AuthRemote remote)
       : _remote = remote,
         _repository = repository ?? AuthRepository(remote: remote);
@@ -116,7 +115,6 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  /// Cập nhật hồ sơ đang giữ trong bộ nhớ sau khi người dùng sửa tên / ảnh.
   void updateLocalUser(AppUser user) {
     if (_user?.id != user.id) return;
     _user = user;
@@ -152,7 +150,6 @@ class AuthProvider extends ChangeNotifier {
       return error.message;
     }
     if (error is PostgrestException) {
-      // Thường gặp khi chưa chạy database/schema.sql hoặc tài khoản thiếu dòng profiles.
       if (error.code == 'PGRST116') {
         return 'Không tìm thấy hồ sơ người dùng. Hãy kiểm tra bảng profiles trên Supabase.';
       }

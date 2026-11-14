@@ -57,7 +57,6 @@ class PlayerProvider extends ChangeNotifier {
   bool get hasNext => _currentIndex >= 0 && _currentIndex + 1 < _queue.length;
   bool get hasPrevious => _currentIndex > 0;
 
-  /// Được gọi mỗi khi một bài bắt đầu phát (dùng để ghi lịch sử nghe).
   void Function(Song song)? onSongStarted;
 
   void clearError() {
@@ -86,7 +85,7 @@ class PlayerProvider extends ChangeNotifier {
     try {
       await _audioService.load(song.audioUrl!);
       onSongStarted?.call(song);
-      // play() chỉ hoàn thành khi dừng phát, nên không await để tránh treo trạng thái loading.
+
       unawaited(
         _audioService.play().catchError((Object _) {
           _errorMessage = 'Không thể phát bài hát.';
@@ -101,7 +100,6 @@ class PlayerProvider extends ChangeNotifier {
     }
   }
 
-  /// Dừng hẳn và xóa hàng đợi (ví dụ khi đăng xuất).
   Future<void> stop() async {
     await _audioService.stop();
     _queue = [];

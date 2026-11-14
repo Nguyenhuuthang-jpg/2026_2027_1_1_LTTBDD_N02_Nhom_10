@@ -6,7 +6,6 @@ enum UserRole {
       value == 'admin' ? UserRole.admin : UserRole.user;
 }
 
-/// Một dòng của bảng `profiles`.
 class AppUser {
   final String id;
   final String name;
@@ -28,7 +27,6 @@ class AppUser {
 
   bool get isAdmin => role == UserRole.admin;
 
-  /// Chữ cái đầu dùng cho avatar mặc định.
   String get initial =>
       name.isEmpty ? '?' : String.fromCharCode(name.runes.first).toUpperCase();
 
@@ -44,7 +42,6 @@ class AppUser {
             : DateTime.parse(json['created_at'] as String),
       );
 
-  /// Chỉ gồm các cột được phép cập nhật từ app.
   Map<String, dynamic> toJson() => {
         'display_name': name,
         'avatar_url': avatarUrl,

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Ảnh bìa bài hát / playlist. Nếu không có URL thì vẽ nền gradient
-/// (màu cố định theo [seed] để mỗi bài luôn có cùng một màu).
 class CoverArt extends StatelessWidget {
   const CoverArt({
     super.key,

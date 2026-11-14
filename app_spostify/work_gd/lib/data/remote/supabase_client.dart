@@ -1,8 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// Điểm truy cập Supabase duy nhất của ứng dụng.
-/// Truyền URL và publishable/anon key bằng --dart-define, không đưa service_role
-/// key vào ứng dụng Flutter.
 class AppSupabase {
   AppSupabase._();
 

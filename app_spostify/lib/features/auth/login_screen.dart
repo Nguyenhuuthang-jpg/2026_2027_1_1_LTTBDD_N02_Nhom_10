@@ -54,7 +54,6 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 Expanded(
                   child: SingleChildScrollView(
-                    // Banner tràn hết chiều ngang; phần form bên dưới có lề 22px.
                     padding: const EdgeInsets.only(bottom: 28),
                     child: Form(
                       key: _formKey,

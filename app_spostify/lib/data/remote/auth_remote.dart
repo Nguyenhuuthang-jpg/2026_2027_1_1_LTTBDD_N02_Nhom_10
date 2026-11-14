@@ -3,7 +3,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../models/app_user.dart';
 import 'supabase_client.dart';
 
-/// Làm việc trực tiếp với Supabase Auth và bảng profiles.
 class AuthRemote {
   AuthRemote({SupabaseClient? client}) : _overrideClient = client;
 
@@ -41,7 +40,6 @@ class AuthRemote {
     return profile;
   }
 
-  /// Trả về true nếu Supabase tạo session ngay; false nếu cần xác nhận email.
   Future<bool> signUp({
     required String email,
     required String password,

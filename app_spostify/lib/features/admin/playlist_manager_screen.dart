@@ -11,7 +11,6 @@ import '../../widgets/confirm_dialog.dart';
 import '../../widgets/cover_art.dart';
 import '../../widgets/state_views.dart';
 
-/// Quản lý playlist: tạo, sửa, chọn bài, ẩn/hiện ở "Dành riêng cho bạn", xóa.
 class PlaylistManagerScreen extends StatelessWidget {
   const PlaylistManagerScreen({super.key});
 
@@ -110,7 +109,6 @@ class _PlaylistRow extends StatelessWidget {
   }
 }
 
-/// Hộp thoại tạo (playlist == null) hoặc sửa playlist.
 Future<void> showPlaylistFormDialog(BuildContext context, {Playlist? playlist}) async {
   final provider = context.read<PlaylistProvider>();
   final messenger = ScaffoldMessenger.of(context);
@@ -190,7 +188,6 @@ Future<void> showPlaylistFormDialog(BuildContext context, {Playlist? playlist}) 
   }
 }
 
-/// Bảng chọn bài hát cho playlist (tick để thêm / bỏ).
 Future<void> showPlaylistSongsSheet(BuildContext context, Playlist playlist) {
   return showModalBottomSheet<void>(
     context: context,
@@ -211,7 +208,7 @@ class _PlaylistSongsSheet extends StatefulWidget {
 }
 
 class _PlaylistSongsSheetState extends State<_PlaylistSongsSheet> {
-  List<int>? _selected; // giữ thứ tự chọn
+  List<int>? _selected;
   String? _error;
   bool _saving = false;
 

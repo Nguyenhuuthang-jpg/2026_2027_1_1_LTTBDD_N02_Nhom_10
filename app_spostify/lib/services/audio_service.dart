@@ -1,6 +1,5 @@
 import 'package:just_audio/just_audio.dart';
 
-/// Lớp bao just_audio; không chứa logic giao diện hay quản lý danh sách bài hát.
 class AudioService {
   AudioService({AudioPlayer? player}) : _player = player ?? AudioPlayer();
 
@@ -17,11 +16,8 @@ class AudioService {
   Duration? get duration => _player.duration;
   ProcessingState get processingState => _player.processingState;
 
-  /// Tiền tố đường dẫn cho file nhạc đóng gói trong app, ví dụ
-  /// `asset:///assets/audio/mot-dem-say.mp3`.
   static const assetPrefix = 'asset:///';
 
-  /// Tải nguồn nhạc: link online (https://...) hoặc file trong thư mục assets.
   Future<Duration?> load(String url) {
     if (url.startsWith(assetPrefix)) {
       return _player.setAsset(url.substring(assetPrefix.length));

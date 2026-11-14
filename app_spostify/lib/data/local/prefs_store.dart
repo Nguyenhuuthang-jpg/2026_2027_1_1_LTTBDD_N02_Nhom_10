@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Lưu cài đặt nhẹ: ngôn ngữ, giao diện sáng/tối (shared_preferences).
 class PrefsStore {
   PrefsStore._(this._prefs);
 
@@ -20,19 +19,17 @@ class PrefsStore {
       case 'system':
         return ThemeMode.system;
       default:
-        return ThemeMode.dark; // mặc định theo thiết kế: nền tối
+        return ThemeMode.dark;
     }
   }
 
   Future<void> setThemeMode(ThemeMode mode) =>
       _prefs.setString(_kThemeMode, mode.name);
 
-  /// 'vi' hoặc 'en'.
   String get languageCode => _prefs.getString(_kLanguage) ?? 'vi';
 
   Future<void> setLanguageCode(String code) => _prefs.setString(_kLanguage, code);
 
-  // Dùng cho cache dữ liệu (xem app_database.dart).
   String? getString(String key) => _prefs.getString(key);
   Future<void> setString(String key, String value) => _prefs.setString(key, value);
   Future<void> remove(String key) => _prefs.remove(key);

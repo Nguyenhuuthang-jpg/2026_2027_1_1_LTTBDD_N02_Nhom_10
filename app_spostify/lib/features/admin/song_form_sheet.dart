@@ -8,7 +8,6 @@ import '../../models/song.dart';
 import '../../providers/song_provider.dart';
 import '../../services/audio_service.dart';
 
-/// Mở bảng trượt thêm (song == null) hoặc sửa bài hát.
 Future<void> showSongFormSheet(BuildContext context, {Song? song}) {
   return showModalBottomSheet<void>(
     context: context,
@@ -68,13 +67,12 @@ class _SongFormSheetState extends State<SongFormSheet> {
 
   String? _httpsValidator(String? v) {
     final text = (v ?? '').trim();
-    if (text.isEmpty) return null; // không bắt buộc
+    if (text.isEmpty) return null;
     final uri = Uri.tryParse(text);
     final ok = uri != null && uri.scheme == 'https' && uri.host.isNotEmpty;
     return ok ? null : context.tr('urlMustBeHttps');
   }
 
-  /// Link nhạc: https://... hoặc file trong app dạng asset:///assets/audio/ten-file.mp3
   String? _audioValidator(String? v) {
     final text = (v ?? '').trim();
     if (text.startsWith(AudioService.assetPrefix)) {
@@ -126,7 +124,7 @@ class _SongFormSheetState extends State<SongFormSheet> {
   @override
   Widget build(BuildContext context) {
     final genres = context.watch<SongProvider>().genres;
-    // Nếu thể loại cũ không còn trong danh sách thì bỏ chọn để tránh lỗi Dropdown.
+
     final genreValue = genres.any((g) => g.id == _genreId) ? _genreId : null;
 
     return Padding(

@@ -1,4 +1,3 @@
-/// Các hàm kiểm tra dữ liệu đầu vào dùng chung cho form.
 class Validators {
   Validators._();
 

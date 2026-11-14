@@ -1,7 +1,6 @@
 import '../../models/app_user.dart';
 import '../remote/auth_remote.dart';
 
-/// Lớp nghiệp vụ xác thực; Provider không gọi Supabase trực tiếp.
 class AuthRepository {
   AuthRepository({AuthRemote? remote}) : _remote = remote ?? AuthRemote();
 

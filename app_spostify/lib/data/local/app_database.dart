@@ -4,13 +4,6 @@ import '../../models/playlist.dart';
 import '../../models/song.dart';
 import 'prefs_store.dart';
 
-/// Cache cục bộ cho bài hát và playlist, dùng khi mất mạng.
-///
-/// Ghi chú: bản thiết kế dự định dùng drift (SQLite). drift cần sinh code bằng
-/// build_runner và cấu hình riêng cho web (sqlite3.wasm), nên tạm thời cache được
-/// lưu dạng JSON qua shared_preferences để chạy được trên mọi nền tảng
-/// (Android, iOS, Windows, Web). Giao diện lớp giữ nguyên, sau này có thể thay
-/// phần cài đặt bên trong bằng drift mà không phải sửa repository.
 class AppDatabase {
   AppDatabase(this._store);
 

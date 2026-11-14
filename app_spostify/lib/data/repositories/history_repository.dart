@@ -1,7 +1,6 @@
 import '../../models/song.dart';
 import '../remote/supabase_client.dart';
 
-/// Một lượt nghe trong lịch sử.
 class HistoryEntry {
   final int id;
   final Song song;
@@ -10,11 +9,9 @@ class HistoryEntry {
   const HistoryEntry({required this.id, required this.song, required this.playedAt});
 }
 
-/// Lịch sử nghe (listening_history) và bài yêu thích (favorites).
 class HistoryRepository {
   String? get _uid => AppSupabase.client.auth.currentUser?.id;
 
-  /// Ghi nhận một lượt nghe: thêm lịch sử + tăng play_count (hàm record_play).
   Future<void> recordPlay(int songId) async {
     await AppSupabase.client.rpc('record_play', params: {'p_song_id': songId});
   }

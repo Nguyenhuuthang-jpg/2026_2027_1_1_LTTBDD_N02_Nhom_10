@@ -8,7 +8,6 @@ import '../../widgets/genre_chip.dart';
 import '../../widgets/song_tile.dart';
 import '../../widgets/state_views.dart';
 
-/// Tìm kiếm theo tên bài / nghệ sĩ và lọc theo thể loại (lọc ngay trên máy).
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
 

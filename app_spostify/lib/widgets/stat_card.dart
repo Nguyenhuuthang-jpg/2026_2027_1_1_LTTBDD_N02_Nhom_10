@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 
 import '../core/theme/app_theme.dart';
 
-/// Ô số liệu trên màn Tổng quan.
 class StatCard extends StatelessWidget {
   const StatCard({
     super.key,

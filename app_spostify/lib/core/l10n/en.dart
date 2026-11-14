@@ -1,9 +1,7 @@
-/// English interface strings.
 class En {
   En._();
 
   static const Map<String, String> strings = {
-    // Common / auth
     'appName': 'Giai Dieu',
     'login': 'Sign in',
     'register': 'Create account',
@@ -41,7 +39,6 @@ class En {
     'offline': 'Could not reach the server – showing saved data.',
     'logoutQ': 'Do you want to sign out?',
 
-    // Navigation
     'n_home': 'Home',
     'n_explore': 'Explore',
     'n_library': 'Library',
@@ -52,7 +49,6 @@ class En {
     'n_users': 'Users',
     'n_set': 'Settings',
 
-    // User
     'goodMorning': 'Good morning',
     'goodAfternoon': 'Good afternoon',
     'goodEvening': 'Good evening',
@@ -77,7 +73,6 @@ class En {
     'plays': 'plays',
     'noSongsInPl': 'This playlist has no songs yet.',
 
-    // Settings
     'lang': 'Language',
     'appearance': 'Appearance',
     'darkMode': 'Dark mode',
@@ -85,7 +80,6 @@ class En {
     'version': 'Version',
     'team': 'Team 10 · Class N02 · Mobile Programming',
 
-    // Admin
     'st_users': 'Users',
     'st_plays': 'Plays today',
     'st_songs': 'Songs',

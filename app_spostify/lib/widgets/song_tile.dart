@@ -7,7 +7,6 @@ import '../providers/history_provider.dart';
 import '../providers/player_provider.dart';
 import 'cover_art.dart';
 
-/// Một dòng bài hát. Bài đang phát được tô màu xanh chủ đạo.
 class SongTile extends StatelessWidget {
   const SongTile({
     super.key,
@@ -24,10 +23,8 @@ class SongTile extends StatelessWidget {
   final Widget? trailing;
   final bool showFavorite;
 
-  /// Số thứ tự hiển thị bên trái (ví dụ bảng xếp hạng). Null = không hiện.
   final int? index;
 
-  /// Ghi đè dòng phụ mặc định "Nghệ sĩ · 3:45".
   final String? subtitle;
 
   @override
@@ -89,7 +86,6 @@ class _FavoriteButton extends StatelessWidget {
   }
 }
 
-/// Phát [song] trong hàng đợi [queue] và báo lỗi bằng SnackBar nếu có.
 Future<void> playSongFromList(BuildContext context, Song song, List<Song> queue) async {
   final player = context.read<PlayerProvider>();
   final messenger = ScaffoldMessenger.of(context);

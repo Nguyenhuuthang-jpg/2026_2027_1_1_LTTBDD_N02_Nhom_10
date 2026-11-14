@@ -1,7 +1,3 @@
-/// Một dòng của bảng `playlists`.
-///
-/// Số bài lấy từ query có đếm:
-///   supabase.from('playlists').select('*, playlist_songs(count)')
 class Playlist {
   final int id;
   final String name;
@@ -20,7 +16,6 @@ class Playlist {
   });
 
   factory Playlist.fromJson(Map<String, dynamic> json) {
-    // playlist_songs(count) trả về [{"count": 18}]
     final counts = json['playlist_songs'];
     final songCount = counts is List && counts.isNotEmpty
         ? (counts.first['count'] as num?)?.toInt() ?? 0

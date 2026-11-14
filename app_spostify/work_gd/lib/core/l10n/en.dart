@@ -1,4 +1,3 @@
-/// English interface strings.
 class En {
   En._();
 

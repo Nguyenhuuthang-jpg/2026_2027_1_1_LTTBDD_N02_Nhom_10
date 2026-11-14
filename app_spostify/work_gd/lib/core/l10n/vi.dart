@@ -1,4 +1,3 @@
-/// Chuỗi giao diện tiếng Việt.
 class Vi {
   Vi._();
 

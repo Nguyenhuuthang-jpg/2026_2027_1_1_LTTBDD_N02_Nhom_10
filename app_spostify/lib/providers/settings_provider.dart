@@ -4,7 +4,6 @@ import '../core/l10n/en.dart';
 import '../core/l10n/vi.dart';
 import '../data/local/prefs_store.dart';
 
-/// Ngôn ngữ (vi/en) và giao diện sáng/tối, lưu bằng PrefsStore.
 class SettingsProvider extends ChangeNotifier {
   SettingsProvider({PrefsStore? store})
       : _store = store,
@@ -23,7 +22,6 @@ class SettingsProvider extends ChangeNotifier {
 
   Map<String, String> get _strings => isVietnamese ? Vi.strings : En.strings;
 
-  /// Lấy chuỗi giao diện theo khóa; nếu thiếu thì lấy bản tiếng Việt, cuối cùng là chính khóa.
   String t(String key) => _strings[key] ?? Vi.strings[key] ?? key;
 
   Future<void> setThemeMode(ThemeMode mode) async {

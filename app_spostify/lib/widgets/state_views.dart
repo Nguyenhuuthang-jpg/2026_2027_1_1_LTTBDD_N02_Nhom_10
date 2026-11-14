@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../core/l10n/app_strings.dart';
 
-/// Trạng thái rỗng: icon + tiêu đề + mô tả.
 class EmptyView extends StatelessWidget {
   const EmptyView({
     super.key,
@@ -40,7 +39,6 @@ class EmptyView extends StatelessWidget {
   }
 }
 
-/// Trạng thái lỗi có nút Thử lại.
 class ErrorView extends StatelessWidget {
   const ErrorView({super.key, required this.message, required this.onRetry});
 
@@ -73,7 +71,6 @@ class ErrorView extends StatelessWidget {
   }
 }
 
-/// Tiêu đề mục trong trang.
 class SectionHeader extends StatelessWidget {
   const SectionHeader(this.title, {super.key, this.trailing});
 

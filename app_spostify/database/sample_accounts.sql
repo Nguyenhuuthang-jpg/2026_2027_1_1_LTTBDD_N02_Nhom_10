@@ -1,16 +1,3 @@
--- =====================================================================
--- Tài khoản mẫu để thử ứng dụng (chạy trong Supabase → SQL Editor).
--- Chạy SAU schema.sql và policies.sql. Chạy lại nhiều lần cũng không sao.
---
---   admin@giaidieu.vn  / 123456   → Quản trị viên
---   user@giaidieu.vn   / 123456   → Người dùng
---   lan@giaidieu.vn    / 123456   → Người dùng
---   khoa@giaidieu.vn   / 123456   → Người dùng (đã bị khóa, để thử chức năng khóa)
---
--- Email được xác nhận sẵn nên không cần bấm link trong hộp thư.
--- CHỈ dùng cho môi trường thử nghiệm – đổi mật khẩu trước khi đưa vào dùng thật.
--- =====================================================================
-
 create or replace function pg_temp.create_sample_user(
   p_email text,
   p_password text,
@@ -23,7 +10,7 @@ declare
 begin
   select id into v_id from auth.users where email = p_email;
   if v_id is not null then
-    return v_id; -- đã có thì bỏ qua
+    return v_id;
   end if;
 
   v_id := gen_random_uuid();
@@ -51,7 +38,7 @@ begin
     now(), now(), now()
   );
 
-  return v_id; -- trigger on_auth_user_created tự tạo dòng public.profiles
+  return v_id;
 end;
 $$;
 
@@ -60,16 +47,12 @@ select pg_temp.create_sample_user('user@giaidieu.vn',  '123456', 'Người dùng
 select pg_temp.create_sample_user('lan@giaidieu.vn',   '123456', 'Trần Lan');
 select pg_temp.create_sample_user('khoa@giaidieu.vn',  '123456', 'Lê Khoa');
 
--- Bổ sung profile nếu tài khoản được tạo trước khi có trigger.
 insert into public.profiles (id, email, display_name)
 select u.id, u.email, coalesce(u.raw_user_meta_data ->> 'display_name', split_part(u.email, '@', 1))
 from auth.users u
 where u.email like '%@giaidieu.vn'
 on conflict (id) do nothing;
 
--- Phân quyền / trạng thái.
--- Trigger protect_profile_columns chặn đổi role khi không có admin đăng nhập
--- (SQL Editor không có auth.uid()), nên tạm tắt trigger trong lúc cập nhật.
 do $$
 declare
   v_has_trigger boolean := exists (
@@ -91,6 +74,5 @@ begin
 end;
 $$;
 
--- Kiểm tra kết quả
 select email, display_name, role, is_active from public.profiles
 where email like '%@giaidieu.vn' order by role, email;

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../core/l10n/app_strings.dart';
 
-/// Hộp thoại xác nhận. Trả về true nếu người dùng đồng ý.
 Future<bool> showConfirmDialog(
   BuildContext context, {
   required String title,

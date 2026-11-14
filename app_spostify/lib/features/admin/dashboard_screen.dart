@@ -11,7 +11,6 @@ import '../../widgets/song_tile.dart';
 import '../../widgets/stat_card.dart';
 import '../../widgets/state_views.dart';
 
-/// Màn Tổng quan: 4 ô số liệu, biểu đồ 14 ngày, top bài hát.
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
@@ -111,7 +110,6 @@ class DashboardScreen extends StatelessWidget {
   }
 }
 
-/// Biểu đồ cột đơn giản, không cần thư viện ngoài.
 class _DailyBarChart extends StatelessWidget {
   const _DailyBarChart({required this.values, required this.todayLabel});
 

@@ -4,7 +4,6 @@ import 'package:app_spostify/models/song.dart';
 import 'package:app_spostify/providers/song_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// Repository giả: lưu trong bộ nhớ, không gọi Supabase.
 class FakeSongRepository extends SongRepository {
   FakeSongRepository(this.data);
 

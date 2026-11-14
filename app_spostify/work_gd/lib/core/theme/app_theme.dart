@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// Bảng màu và ThemeData dùng chung cho ứng dụng Giai Điệu.
 class AppTheme {
   AppTheme._();
 
-  // Màu tối theo thiết kế: #101412 và xanh chủ đạo #1ED760.
   static const Color darkBackground = Color(0xFF101412);
   static const Color primaryGreen = Color(0xFF1ED760);
   static const Color darkSurface = Color(0xFF1B211D);

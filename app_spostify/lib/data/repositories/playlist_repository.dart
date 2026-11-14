@@ -2,7 +2,6 @@ import '../../models/playlist.dart';
 import '../../models/song.dart';
 import '../remote/supabase_client.dart';
 
-/// Truy vấn bảng playlists và playlist_songs. Quyền ghi do RLS (chỉ admin).
 class PlaylistRepository {
   static const String _selectWithCount = '*, playlist_songs(count)';
 
@@ -66,7 +65,6 @@ class PlaylistRepository {
     await AppSupabase.client.from('playlists').delete().eq('id', id);
   }
 
-  /// Danh sách bài hát của một playlist, theo thứ tự `position`.
   Future<List<Song>> fetchSongsOf(int playlistId) async {
     final rows = await AppSupabase.client
         .from('playlist_songs')
@@ -79,7 +77,6 @@ class PlaylistRepository {
         .toList();
   }
 
-  /// Thay toàn bộ danh sách bài của playlist (dùng cho màn quản trị).
   Future<void> setSongsOf(int playlistId, List<int> songIds) async {
     await AppSupabase.client
         .from('playlist_songs')

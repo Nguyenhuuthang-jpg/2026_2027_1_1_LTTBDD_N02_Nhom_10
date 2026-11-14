@@ -5,7 +5,6 @@ import '../data/repositories/playlist_repository.dart';
 import '../models/playlist.dart';
 import '../models/song.dart';
 
-/// Quản lý danh sách playlist. Phân quyền ghi được kiểm soát bằng RLS ở database.
 class PlaylistProvider extends ChangeNotifier {
   PlaylistProvider({PlaylistRepository? repository, AppDatabase? cache})
       : _repository = repository ?? PlaylistRepository(),

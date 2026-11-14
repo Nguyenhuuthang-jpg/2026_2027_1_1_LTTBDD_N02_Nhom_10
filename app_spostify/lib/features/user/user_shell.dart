@@ -11,7 +11,6 @@ import 'home_screen.dart';
 import 'library_screen.dart';
 import 'profile_screen.dart';
 
-/// Khung chính phía người dùng: 4 tab + mini player phía trên thanh điều hướng.
 class UserShell extends StatefulWidget {
   const UserShell({super.key});
 
@@ -79,7 +78,6 @@ class _UserShellState extends State<UserShell> {
   }
 }
 
-/// Tải lại toàn bộ dữ liệu phía người dùng (dùng cho kéo-để-làm-mới).
 Future<void> refreshUserData(BuildContext context) async {
   final songs = context.read<SongProvider>();
   final playlists = context.read<PlaylistProvider>();

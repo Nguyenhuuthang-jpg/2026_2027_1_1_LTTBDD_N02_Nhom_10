@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../core/theme/app_theme.dart';
 import '../models/genre.dart';
 
-/// Chip chọn thể loại (dùng ở Khám phá và Quản lý bài hát).
 class GenreChip extends StatelessWidget {
   const GenreChip({
     super.key,
@@ -36,7 +35,6 @@ class GenreChip extends StatelessWidget {
   }
 }
 
-/// Hàng chip thể loại cuộn ngang, có lựa chọn "Tất cả" (id = null).
 class GenreChipBar extends StatelessWidget {
   const GenreChipBar({
     super.key,

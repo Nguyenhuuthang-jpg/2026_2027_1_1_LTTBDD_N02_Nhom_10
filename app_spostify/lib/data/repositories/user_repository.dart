@@ -1,7 +1,6 @@
 import '../../models/app_user.dart';
 import '../remote/supabase_client.dart';
 
-/// Quản lý bảng profiles: admin khóa / mở khóa, người dùng sửa hồ sơ của mình.
 class UserRepository {
   static const String _columns =
       'id, display_name, email, role, is_active, avatar_url, created_at';
@@ -16,7 +15,6 @@ class UserRepository {
     return rows.map((r) => AppUser.fromJson(Map<String, dynamic>.from(r))).toList();
   }
 
-  /// Chỉ admin mới làm được (trigger protect_profile_columns chặn người thường).
   Future<AppUser> setActive(String userId, {required bool isActive}) async {
     final row = await AppSupabase.client
         .from('profiles')

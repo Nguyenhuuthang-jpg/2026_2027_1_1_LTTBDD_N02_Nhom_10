@@ -9,7 +9,6 @@ import '../../widgets/confirm_dialog.dart';
 import '../../widgets/song_tile.dart';
 import '../../widgets/state_views.dart';
 
-/// Thư viện: bài yêu thích + lịch sử nghe.
 class LibraryScreen extends StatelessWidget {
   const LibraryScreen({super.key});
 
